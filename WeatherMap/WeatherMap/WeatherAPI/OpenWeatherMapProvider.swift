@@ -54,7 +54,30 @@ class OpenWeatherMapProvider {
                         description: "overcast clouds",
                         icon: "04n")
                 ]
-            )
+            ),
+            hourly: [
+                Hour(
+                    dt: 0,
+                    temp: 0,
+                    feelsLike: 0,
+                    pressure: 0,
+                    humidity: 0,
+                    dewPoint: 0,
+                    uvi: 0,
+                    clouds: 0,
+                    visibility: 0,
+                    windSpeed: 0,
+                    windDeg: 0,
+                    windGust: 0,
+                    weather: [
+                        Weather(
+                            id: 0,
+                            main: "Cloudy",
+                            description: "overcast clouds",
+                            icon: "04n")
+                    ],
+                    pop: 0)
+            ]
         )
         
         completion(dummyData)

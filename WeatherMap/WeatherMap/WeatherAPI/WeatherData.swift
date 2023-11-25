@@ -13,14 +13,14 @@ struct WeatherData: Codable {
     let timeZoneOffset: Int
     let current: Current
     //    let minutely: [Minute]
-    //    let hourly: [Hour]
+    let hourly: [Hour]
     //    let daily: [Day]
     
     enum CodingKeys: String, CodingKey {
         case lat, lon
         case current
         //        case minutely
-        //        case hourly
+        case hourly
         //        case daily
         case timeZone = "timezone"
         case timeZoneOffset = "timezone_offset"

@@ -14,10 +14,28 @@ class OpenWeatherMapProvider {
     public func getWeatherData(latitude: String, longitude: String, completion: @escaping (WeatherData) -> Void) {
         guard let endpoint = getApiEndpoint(latitude: latitude, longitude: longitude) else { return }
         let task = URLSession.shared.dataTask(with: endpoint) { (data, response, error) in
-            if let unwrappedData = data, let decodedData = try? JSONDecoder().decode(WeatherData.self, from: unwrappedData) {
+            guard let unwrappedData = data else {
+                print("Failed to unwrap data!")
+                return
+            }
+            
+            // Reference: https://stackoverflow.com/a/55391123/11228029
+            do {
+                let decodedData = try JSONDecoder().decode(WeatherData.self, from: unwrappedData)
                 completion(decodedData)
-            } else {
-                print("Failed to decode the data!")
+            } catch let DecodingError.dataCorrupted(context) {
+                print(context)
+            } catch let DecodingError.keyNotFound(key, context) {
+                print("Key '\(key)' not found:", context.debugDescription)
+                print("codingPath:", context.codingPath)
+            } catch let DecodingError.valueNotFound(value, context) {
+                print("Value '\(value)' not found:", context.debugDescription)
+                print("codingPath:", context.codingPath)
+            } catch let DecodingError.typeMismatch(type, context)  {
+                print("Type '\(type)' mismatch:", context.debugDescription)
+                print("codingPath:", context.codingPath)
+            } catch {
+                print("error: ", error)
             }
         }
         
@@ -76,7 +94,70 @@ class OpenWeatherMapProvider {
                             description: "overcast clouds",
                             icon: "04n")
                     ],
+                    pop: 0),
+                Hour(
+                    dt: 0,
+                    temp: 0,
+                    feelsLike: 0,
+                    pressure: 0,
+                    humidity: 0,
+                    dewPoint: 0,
+                    uvi: 0,
+                    clouds: 0,
+                    visibility: 0,
+                    windSpeed: 0,
+                    windDeg: 0,
+                    windGust: 0,
+                    weather: [
+                        Weather(
+                            id: 0,
+                            main: "Cloudy",
+                            description: "overcast clouds",
+                            icon: "04n")
+                    ],
                     pop: 0)
+            ],
+            daily: [
+                Day(
+                    dt: 0,
+                    sunRise: 0,
+                    sunSet: 0,
+                    moonRise: 0,
+                    moonSet: 0,
+                    moonPhase: 0,
+                    summary: "Expect a day of partly cloudy with rain",
+                    temp: Temperature(
+                        day: 0,
+                        min: 0,
+                        max: 0,
+                        night: 0,
+                        eve: 0,
+                        morn: 0
+                    ),
+                    feelsLike: FeelsLike(
+                        day: 0,
+                        night: 0,
+                        eve: 0,
+                        morn: 0
+                    ),
+                    pressure: 0,
+                    humidity: 0,
+                    dewPoint: 0,
+                    windSpeed: 0,
+                    windDeg: 0,
+                    windGust: 0,
+                    weather: [
+                        Weather(
+                            id: 0,
+                            main: "Cloudy",
+                            description: "overcast clouds",
+                            icon: "04n")
+                    ],
+                    clouds: 0,
+                    pop: 0,
+                    rain: 0,
+                    uvi: 0
+                )
             ]
         )
         
@@ -84,7 +165,7 @@ class OpenWeatherMapProvider {
     }
     
     private func getApiEndpoint(latitude: String = "", longitude: String = "") -> URL? {
-        let excludeList = "minutes,hours,daily,alerts"
+        let excludeList = "minutes,alerts"
         return URL(string: String("https://api.openweathermap.org/data/3.0/onecall?lat=\(latitude)&lon=\(longitude)&appid=\(ApiKey)&units=metric&exclude=\(excludeList)"))
     }
 }

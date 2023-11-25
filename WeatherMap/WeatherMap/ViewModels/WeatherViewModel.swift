@@ -13,6 +13,11 @@ import SwiftUI
     var provider = OpenWeatherMapProvider();
     var weatherData: WeatherData? = nil
     
+    init(dummyDataRequired: Bool? = nil) {
+        guard let _ = dummyDataRequired else { return }
+        loadWeatherData(latitude: "", longitude: "", useDummy: true)
+    }
+    
     public func isDataLoaded() -> Bool {
         return weatherData != nil
     }
@@ -27,7 +32,7 @@ import SwiftUI
     }
     
     public func getGradientColors(override: String? = nil) -> [Color] {
-//        guard let data = weatherData else { return [ .white, .white ] }
+        //        guard let data = weatherData else { return [ .white, .white ] }
         
         var color: Color
         switch (override ?? (weatherData?.current.weather[0].main ?? ""))
@@ -70,6 +75,24 @@ import SwiftUI
         return data.current.weather[0].description.capitalized
     }
     
+    public static func GetHour(unix: Int) -> String {
+        let date = NSDate(timeIntervalSince1970: Double(unix))
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm a"
+        
+        return formatter.string(from: formatter.date(from: formatter.string(from: date as Date))!)
+    }
+    
+    public static func GetDay(unix: Int) -> String {
+        let date = NSDate(timeIntervalSince1970: Double(unix))
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMM dd, yyyy"
+        
+        return formatter.string(from: formatter.date(from: formatter.string(from: date as Date))!)
+    }
+    
     public func getDateTime() -> String {
         guard let data = weatherData else { return "Jan 1, 1970 at 00 AM" }
         let date = NSDate(timeIntervalSince1970: Double(data.current.dt))
@@ -90,9 +113,13 @@ import SwiftUI
         return decodeTimeFromUnix(value: data.current.sunSet)
     }
     
+    public static func GetTemperature(temp: Double) -> String {
+        return String(format: "%.1f", temp) + "°C"
+    }
+    
     public func getTemperature() -> String {
         guard let data = weatherData else { return "0°C" }
-        return String(format: "%.1f", data.current.temp) + "°C"
+        return WeatherViewModel.GetTemperature(temp: data.current.temp)
     }
     
     public func getFeelsLikeTemperature() -> String {
@@ -118,6 +145,16 @@ import SwiftUI
     public func getWind() -> String {
         guard let data = weatherData else { return "0\nKm/h" }
         return String(format: "%.1f", data.current.windSpeed) + "\nKm/h"
+    }
+    
+    public func getHourlyForecast() -> [Hour] {
+        guard let data = weatherData else { return [] }
+        return data.hourly
+    }
+    
+    public func getDailyForecast() -> [Day] {
+        guard let data = weatherData else { return [] }
+        return data.daily
     }
     
     private func onWeatherDataLoaded(data: WeatherData) {

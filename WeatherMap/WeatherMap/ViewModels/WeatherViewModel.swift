@@ -26,7 +26,7 @@ import SwiftUI
     public func refresh() async {
         await provider.getWeatherDataAsync(latitude: latitude, longitude: longitude, completion: onWeatherDataLoaded)
     }
-        
+    
     public func isDataLoaded() -> Bool {
         return weatherData != nil
     }
@@ -40,11 +40,9 @@ import SwiftUI
         }
     }
     
-    public func getGradientColors(override: String? = nil) -> [Color] {
-        //        guard let data = weatherData else { return [ .white, .white ] }
-        
+    public static func getWeatherGradientColor(main: String) -> [Color] {
         var color: Color
-        switch (override ?? (weatherData?.current.weather[0].main ?? ""))
+        switch (main)
         {
         case "Thunderstorm":
             color = Color(red: 45 / 255, green: 54 / 255, blue: 86 / 255)
@@ -72,6 +70,11 @@ import SwiftUI
         }
         
         return [ color, color.opacity(0.5) ]
+    }
+    
+    public func getGradientColors(override: String? = nil) -> [Color] {
+        guard let data = weatherData else { return WeatherViewModel.getWeatherGradientColor(main: override ?? "") }
+        return WeatherViewModel.getWeatherGradientColor(main: data.current.weather[0].main)
     }
     
     public func getSummary() -> String {

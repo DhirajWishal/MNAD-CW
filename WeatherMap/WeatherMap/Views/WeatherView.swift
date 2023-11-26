@@ -247,7 +247,9 @@ struct WeatherDailyView: View {
         ScrollView (showsIndicators: false) {
             VStack (spacing: 10) {
                 ForEach(model.getDailyForecast()) { forecast in
-                    NavigationLink (destination: {}) {
+                    NavigationLink (destination: {
+                        DayWeatherView(dayWeather: forecast)
+                    }) {
                         HStack {
                             Text("\(WeatherViewModel.GetDay(unix: forecast.dt))")
                                 .font(.headline)
@@ -262,6 +264,7 @@ struct WeatherDailyView: View {
                             Image(systemName: WeatherViewModel.getSystemImageFromMain(main: forecast.weather[0].main))
                         }
                     }
+                    .buttonStyle(.plain)
                 }
             }
         }

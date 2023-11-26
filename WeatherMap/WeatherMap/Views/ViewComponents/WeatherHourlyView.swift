@@ -17,12 +17,18 @@ struct WeatherHourlyView: View {
                 HStack (spacing: 20) {
                     ForEach(model.getHourlyForecast()) { forecast in
                         VStack {
-                            Text(WeatherViewModel.GetHour(unix: forecast.dt))
-                                .font(.headline)
-                                .foregroundStyle(.white.opacity(0.75))
+                            Image(systemName: WeatherPresets.getWeatherSystemImage(type: forecast.weather[0].main))
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 40, height: 40)
+                                .foregroundStyle(.white)
                             
                             Text(WeatherViewModel.GetTemperature(temp: forecast.temp))
-                            Text(forecast.weather[0].main)
+                                .foregroundStyle(.white)
+                            
+                            Text(WeatherViewModel.GetHour(unix: forecast.dt))
+                                .font(.headline)
+                                .foregroundStyle(.black.opacity(0.75))
                         }
                     }
                 }

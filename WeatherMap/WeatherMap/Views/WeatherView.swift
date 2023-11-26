@@ -45,7 +45,6 @@ struct WeatherView: View {
                         WeatherHourlyView(model: model)
                         
                         Divider()
-                            .background(.white)
                         
                         // Show the daily forcast.
                         WeatherDailyView(model: model)

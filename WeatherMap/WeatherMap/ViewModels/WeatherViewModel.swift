@@ -13,13 +13,21 @@ import SwiftUI
 
 @Observable class WeatherViewModel {
     var provider = OpenWeatherMapProvider();
-    var weatherData: WeatherData? = nil
+    var weatherData: WeatherData? = nil {
+        didSet {
+            saveData()
+        }
+    }
     
     var latitude = "6.9271"
     var longitude = "79.861244"
     
     init(dummyDataRequired: Bool? = nil) {
-        guard let _ = dummyDataRequired else { return }
+        guard let _ = dummyDataRequired else {
+            loadData()
+            return
+        }
+        
         loadWeatherData(latitude: latitude, longitude: longitude, useDummy: true)
     }
     
@@ -152,5 +160,21 @@ import SwiftUI
         formatter.dateFormat = "HH:mm a"
         
         return formatter.string(from: formatter.date(from: formatter.string(from: date as Date))!)
+    }
+    
+    // Save data to local storage.
+    public func saveData() {
+        guard let data = weatherData else { return }
+        if let encodedData = try? JSONEncoder().encode(data) {
+            UserDefaults.standard.set(encodedData, forKey: "WeatherMap")
+        }
+    }
+    
+    // Load data from local storage.
+    public func loadData() {
+        let data = UserDefaults.standard.data(forKey: "WeatherMap")
+        if let unwrappedData = data, let decodedData = try? JSONDecoder().decode(WeatherData.self, from: unwrappedData) {
+            weatherData = decodedData
+        }
     }
 }

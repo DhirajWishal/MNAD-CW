@@ -72,5 +72,5 @@ struct WeatherView: View {
 }
 
 #Preview {
-    WeatherView(model: WeatherViewModel(dummyDataRequired: true))
+    WeatherView(model: WeatherViewModel())
 }

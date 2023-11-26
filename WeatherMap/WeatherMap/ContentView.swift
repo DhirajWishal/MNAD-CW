@@ -11,6 +11,7 @@ struct ContentView: View {
     @State var model = WeatherViewModel()
     
     @State var activeColorSet: [Color] = ContentView.getRandomGradient()
+    @State var shouldRefresh = false
     
     var body: some View {
         VStack {
@@ -44,8 +45,19 @@ struct ContentView: View {
             }
         }
         .onAppear() {
-            // TODO: Access geolocation data and use that info.
-            model.loadWeatherData(latitude: "6.9271", longitude: "79.8612", useDummy: false)
+            // Load data if we don't have any already.
+            if !model.isDataLoaded() {
+                // TODO: Access geolocation data and use that info.
+                model.loadWeatherData(latitude: "6.9271", longitude: "79.8612", useDummy: false)
+            }
+            else {
+                shouldRefresh = true
+            }
+        }
+        .task {
+            if shouldRefresh {
+                await model.refresh()
+            }
         }
     }
     

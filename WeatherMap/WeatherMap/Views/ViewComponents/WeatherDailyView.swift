@@ -18,6 +18,10 @@ struct WeatherDailyView: View {
                         DayWeatherView(dayWeather: forecast)
                     }) {
                         HStack {
+                            Image(systemName: WeatherPresets.getWeatherSystemImage(type: forecast.weather[0].main))
+                            
+                            Spacer()
+                            
                             Text("\(WeatherViewModel.GetDay(unix: forecast.dt))")
                                 .font(.headline)
                                 .foregroundStyle(.white.opacity(0.75))
@@ -25,10 +29,6 @@ struct WeatherDailyView: View {
                             Spacer()
                             
                             Text("\(WeatherViewModel.GetTemperature(temp: forecast.temp.min)) / \(WeatherViewModel.GetTemperature(temp: forecast.temp.max))")
-                            
-                            Spacer()
-                            
-                            Image(systemName: WeatherPresets.getWeatherSystemImage(type: forecast.weather[0].main))
                         }
                     }
                     .buttonStyle(.plain)

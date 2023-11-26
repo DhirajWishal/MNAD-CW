@@ -24,9 +24,6 @@ struct WeatherSourceView: View {
                 .buttonStyle(.bordered)
                 .tint(.white)
             }
-            
-            Divider()
-                .background(.white)
         }
     }
     

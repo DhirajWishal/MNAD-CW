@@ -71,6 +71,7 @@ struct DayWeatherView: View {
                 clouds: 0,
                 pop: 0,
                 rain: 0,
+                snow: 0,
                 uvi: 0
             )
     )

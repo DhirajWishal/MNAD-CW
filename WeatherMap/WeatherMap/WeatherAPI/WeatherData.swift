@@ -35,12 +35,15 @@ struct Current: Codable {
     let clouds, visibility: Int
     let windSpeed: Double
     let windDegree: Int
-    let windGust: Double
+    let windGust: Double?
     let weather: [Weather]
+    let rain: OneHour?
+    let snow: OneHour?
     
     enum CodingKeys: String, CodingKey {
         case dt, temp, pressure, humidity, uvi
-        case clouds, visibility, weather
+        case clouds, visibility, weather, rain
+        case snow
         case sunRise = "sunrise"
         case sunSet = "sunset"
         case feelsLike = "feels_like"
@@ -49,6 +52,10 @@ struct Current: Codable {
         case windDegree = "wind_deg"
         case windGust = "wind_gust"
     }
+}
+
+struct OneHour: Codable {
+    let h1: Double?
 }
 
 struct Weather: Codable {
@@ -73,13 +80,16 @@ struct Hour: Codable, Identifiable {
     let clouds, visibility: Int
     let windSpeed: Double
     let windDeg: Int
-    let windGust: Double
+    let windGust: Double?
     let weather: [Weather]
     let pop: Double
+    let rain: OneHour?
+    let snow: OneHour?
     
     enum CodingKeys: String, CodingKey {
         case dt, temp, pressure, humidity, uvi
         case clouds, visibility, weather, pop
+        case rain, snow
         case feelsLike = "feels_like"
         case dewPoint = "dew_point"
         case windSpeed = "wind_speed"
@@ -99,16 +109,18 @@ struct Day: Codable, Identifiable {
     let pressure, humidity: Int
     let dewPoint, windSpeed: Double
     let windDeg: Int
-    let windGust: Double
+    let windGust: Double?
     let weather: [Weather]
     let clouds: Int
     let pop: Double
     let rain: Double?
+    let snow: Double?
     let uvi: Double
     
     enum CodingKeys: String, CodingKey {
         case dt, summary, temp, pressure, humidity
         case weather, clouds, pop, rain, uvi
+        case snow
         case sunRise = "sunrise"
         case sunSet = "sunset"
         case moonRise = "moonrise"

@@ -41,8 +41,12 @@ import SwiftUI
     }
     
     public func getGradientColors(override: String? = nil) -> [Color] {
-        guard let data = weatherData else { return WeatherPresets.getWeatherGradientColor(type: override ?? "") }
-        return WeatherPresets.getWeatherGradientColor(type: data.current.weather[0].main)
+        guard let override = override else {
+            guard let data = weatherData else { return WeatherPresets.getWeatherGradientColor(type: "") }
+            return WeatherPresets.getWeatherGradientColor(type: data.current.weather[0].main)
+        }
+        
+        return WeatherPresets.getWeatherGradientColor(type: override)
     }
     
     public func getSummary() -> String {
@@ -68,7 +72,7 @@ import SwiftUI
         let date = NSDate(timeIntervalSince1970: Double(unix))
         
         let formatter = DateFormatter()
-        formatter.dateFormat = "MMM dd, yyyy"
+        formatter.dateFormat = "EEEE dd"
         
         return formatter.string(from: formatter.date(from: formatter.string(from: date as Date))!)
     }

@@ -22,15 +22,11 @@ struct WeatherHourlyView: View {
                                 .foregroundStyle(.white.opacity(0.75))
                             
                             Text(WeatherViewModel.GetTemperature(temp: forecast.temp))
-//                            Label(forecast.weather[0].main, systemImage: WeatherViewModel.getSystemImageFromMain(main: forecast.weather[0].main))
                             Text(forecast.weather[0].main)
                         }
                     }
                 }
             }
-            
-            Divider()
-                .background(.white)
         }
     }
 }

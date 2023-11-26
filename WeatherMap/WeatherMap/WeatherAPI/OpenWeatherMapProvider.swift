@@ -96,7 +96,9 @@ class OpenWeatherMapProvider {
                         main: "Clouds",
                         description: "overcast clouds",
                         icon: "04n")
-                ]
+                ],
+                rain: OneHour(h1: 0),
+                snow: OneHour(h1: 0)
             ),
             hourly: [
                 Hour(
@@ -119,7 +121,10 @@ class OpenWeatherMapProvider {
                             description: "overcast clouds",
                             icon: "04n")
                     ],
-                    pop: 0),
+                    pop: 0,
+                    rain: OneHour(h1: 0),
+                    snow: OneHour(h1: 0)
+                ),
                 Hour(
                     dt: 0,
                     temp: 0,
@@ -140,7 +145,10 @@ class OpenWeatherMapProvider {
                             description: "overcast clouds",
                             icon: "04n")
                     ],
-                    pop: 0)
+                    pop: 0,
+                    rain: OneHour(h1: 0),
+                    snow: OneHour(h1: 0)
+                )
             ],
             daily: [
                 Day(
@@ -181,6 +189,7 @@ class OpenWeatherMapProvider {
                     clouds: 0,
                     pop: 0,
                     rain: 0,
+                    snow: 0,
                     uvi: 0
                 )
             ]

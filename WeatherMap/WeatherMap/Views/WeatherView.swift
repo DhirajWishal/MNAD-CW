@@ -17,13 +17,13 @@ struct WeatherView: View {
             ZStack(alignment:.leading) {
                 // Set the background color.
                 LinearGradient(
-                    //                colors: model.getGradientColors(override: "Thunderstorm"),
-                    //                colors: model.getGradientColors(override: "Drizzle"),
-                    //                colors: model.getGradientColors(override: "Rain"),
-                    colors: model.getGradientColors(override: "Snow"),
-                    //                                colors: model.getGradientColors(override: "Atmosphere"),
-                    //                                colors: model.getGradientColors(override: "Clear"),
-                    //                                colors: model.getGradientColors(override: "Clouds"),
+                                    colors: model.getGradientColors(override: "Thunderstorm"),
+//                                    colors: model.getGradientColors(override: "Drizzle"),
+//                                    colors: model.getGradientColors(override: "Rain"),
+//                    colors: model.getGradientColors(override: "Snow"),
+//                                                    colors: model.getGradientColors(override: "Atmosphere"),
+//                                                    colors: model.getGradientColors(override: "Clear"),
+//                                                    colors: model.getGradientColors(override: "Clouds"),
                     startPoint: .top,
                     endPoint: .bottom
                 )
@@ -31,7 +31,7 @@ struct WeatherView: View {
                 
                 // Main content stack.
                 ScrollView(showsIndicators: false) {
-                    VStack(alignment: .leading, spacing: 20) {
+                    VStack(alignment: .leading) {
                         // Show the location information and time.
                         WeatherTopView(model: model, shouldShowLocationSearch: $shouldShowLocationSearch)
                         
@@ -44,11 +44,18 @@ struct WeatherView: View {
                         // Show the source to the user.
                         WeatherSourceView()
                         
+                        Divider()
+                            .background(.white)
+                        
                         // Show today's forecast hourly
                         WeatherHourlyView(model: model)
                         
+                        Divider()
+                            .background(.white)
+                        
                         // Show the daily forcast.
                         WeatherDailyView(model: model)
+                        
                     }
                 }
                 .padding()

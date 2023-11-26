@@ -102,7 +102,9 @@ struct Day: Codable, Identifiable {
     let windGust: Double
     let weather: [Weather]
     let clouds: Int
-    let pop, rain, uvi: Double
+    let pop: Double
+    let rain: Double?
+    let uvi: Double
     
     enum CodingKeys: String, CodingKey {
         case dt, summary, temp, pressure, humidity

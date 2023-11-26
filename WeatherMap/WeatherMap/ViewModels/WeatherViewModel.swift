@@ -9,15 +9,24 @@ import Foundation
 import Observation
 import SwiftUI
 
+// TODO: Save the previous loaded JSON data and load them when opening the app.
+
 @Observable class WeatherViewModel {
     var provider = OpenWeatherMapProvider();
     var weatherData: WeatherData? = nil
     
+    var latitude = "6.9271"
+    var longitude = "79.861244"
+    
     init(dummyDataRequired: Bool? = nil) {
         guard let _ = dummyDataRequired else { return }
-        loadWeatherData(latitude: "", longitude: "", useDummy: true)
+        loadWeatherData(latitude: latitude, longitude: longitude, useDummy: true)
     }
     
+    public func refresh() async {
+        await provider.getWeatherDataAsync(latitude: latitude, longitude: longitude, completion: onWeatherDataLoaded)
+    }
+        
     public func isDataLoaded() -> Bool {
         return weatherData != nil
     }

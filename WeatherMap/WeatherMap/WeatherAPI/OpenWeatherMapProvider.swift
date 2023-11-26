@@ -42,6 +42,31 @@ class OpenWeatherMapProvider {
         task.resume()
     }
     
+    /// Get weather data from the OpenWeatherMap API
+    public func getWeatherDataAsync(latitude: String, longitude: String, completion: @escaping (WeatherData) -> Void) async {
+        guard let endpoint = getApiEndpoint(latitude: latitude, longitude: longitude) else { return }
+        
+        // Reference: https://stackoverflow.com/a/55391123/11228029
+        do {
+            let (data, _) = try await URLSession.shared.data(from: endpoint)
+            let decodedData = try JSONDecoder().decode(WeatherData.self, from: data)
+            completion(decodedData)
+        } catch let DecodingError.dataCorrupted(context) {
+            print(context)
+        } catch let DecodingError.keyNotFound(key, context) {
+            print("Key '\(key)' not found:", context.debugDescription)
+            print("codingPath:", context.codingPath)
+        } catch let DecodingError.valueNotFound(value, context) {
+            print("Value '\(value)' not found:", context.debugDescription)
+            print("codingPath:", context.codingPath)
+        } catch let DecodingError.typeMismatch(type, context)  {
+            print("Type '\(type)' mismatch:", context.debugDescription)
+            print("codingPath:", context.codingPath)
+        } catch {
+            print("error: ", error)
+        }
+    }
+    
     /// Use this method for debugging.
     /// Calling the API too much might result in the service charging for each invokation.
     public func getDummyData(latitude: String, longitude: String, completion: @escaping (WeatherData) -> Void) {

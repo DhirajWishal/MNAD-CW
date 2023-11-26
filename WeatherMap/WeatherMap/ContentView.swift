@@ -24,7 +24,7 @@ struct ContentView: View {
         }
         .onAppear() {
             // TODO: Access geolocation data and use that info.
-            model.loadWeatherData(latitude: "0", longitude: "0", useDummy: false)
+            model.loadWeatherData(latitude: "6.9271", longitude: "79.8612", useDummy: false)
         }
     }
 }

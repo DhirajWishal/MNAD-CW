@@ -10,6 +10,8 @@ import SwiftUI
 struct WeatherView: View {
     var model: WeatherViewModel
     
+    @State var isRefreshing = false
+    
     var body: some View {
         ZStack(alignment:.leading) {
             // Set the background color.
@@ -221,6 +223,10 @@ struct WeatherView: View {
                 }
             }
             .padding()
+            .refreshable {
+                // Refresh the weather data.
+                await model.refresh()
+            }
         }
     }
 }

@@ -12,15 +12,15 @@ import SwiftUI
 // TODO: Save the previous loaded JSON data and load them when opening the app.
 
 @Observable class WeatherViewModel {
-    var provider = OpenWeatherMapProvider();
-    var weatherData: WeatherData? = nil {
+    private var provider = OpenWeatherMapProvider();
+    private var weatherData: WeatherData? = nil {
         didSet {
             saveData()
         }
     }
     
-    var latitude = "6.9271"
-    var longitude = "79.861244"
+    private var latitude = "51.5072"
+    private var longitude = "0.1276"
     
     init(dummyDataRequired: Bool? = nil) {
         guard let _ = dummyDataRequired else {
@@ -28,10 +28,29 @@ import SwiftUI
             return
         }
         
-        loadWeatherData(latitude: latitude, longitude: longitude, useDummy: true)
+        loadWeatherData(useDummy: true)
     }
     
-    public func refresh() async {
+    public func getLatitude() -> String {
+        return latitude
+    }
+    
+    public func getLongitude() -> String {
+        return longitude
+    }
+    
+    public func update(latitude: String, longitude: String) {
+        self.latitude = latitude
+        self.longitude = longitude
+        
+        refresh()
+    }
+    
+    public func refresh() {
+        provider.getWeatherData(latitude: latitude, longitude: longitude, completion: onWeatherDataLoaded)
+    }
+    
+    public func refreshAsync() async {
         await provider.getWeatherDataAsync(latitude: latitude, longitude: longitude, completion: onWeatherDataLoaded)
     }
     
@@ -39,7 +58,7 @@ import SwiftUI
         return weatherData != nil
     }
     
-    public func loadWeatherData(latitude: String, longitude: String, useDummy: Bool = true) {
+    public func loadWeatherData(useDummy: Bool = true) {
         if useDummy {
             provider.getDummyData(latitude: latitude, longitude: longitude, completion: onWeatherDataLoaded)
         }
@@ -166,15 +185,19 @@ import SwiftUI
     public func saveData() {
         guard let data = weatherData else { return }
         if let encodedData = try? JSONEncoder().encode(data) {
-            UserDefaults.standard.set(encodedData, forKey: "WeatherMap")
+            UserDefaults.standard.set(encodedData, forKey: "WeatherMap_WeatherData")
         }
     }
     
     // Load data from local storage.
     public func loadData() {
-        let data = UserDefaults.standard.data(forKey: "WeatherMap")
+        let data = UserDefaults.standard.data(forKey: "WeatherMap_WeatherData")
         if let unwrappedData = data, let decodedData = try? JSONDecoder().decode(WeatherData.self, from: unwrappedData) {
             weatherData = decodedData
+            
+            // Fallback to London coordinates if we don't have coordinate data.
+            latitude = String(weatherData?.lat ?? 51.5072)
+            longitude = String(weatherData?.lon ?? 0.1276)
         }
     }
 }

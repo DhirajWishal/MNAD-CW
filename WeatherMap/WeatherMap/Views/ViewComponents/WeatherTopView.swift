@@ -9,17 +9,31 @@ import SwiftUI
 
 struct WeatherTopView: View {
     var model: WeatherViewModel
+    
     @Binding var shouldShowLocationSearch: Bool
+    
+    @State var isLocationAvailable = false
+    @State var cityName = ""
+    @State var countryName = ""
     
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
                 HStack {
-                    Text("Location")
-                        .font(.largeTitle)
-                        .foregroundStyle(.white)
-                        .multilineTextAlignment(.leading)
-                        .bold()
+                    if isLocationAvailable {
+                        Text(cityName)
+                            .font(.largeTitle)
+                            .foregroundStyle(.white)
+                            .multilineTextAlignment(.leading)
+                            .bold()
+                        
+                        Text(countryName)
+                            .foregroundStyle(.white)
+                            .multilineTextAlignment(.leading)
+                            .bold()
+                    } else {
+                        ProgressView()
+                    }
                     
                     Spacer()
                     
@@ -63,6 +77,15 @@ struct WeatherTopView: View {
                 }
             }
         }
+        .onAppear() {
+            Geocoder.fetchLocation(latitude: model.getLatitude(), longitude: model.getLongitude(), completed: onLocationNameFetched)
+        }
+    }
+    
+    private func onLocationNameFetched(city: String, country: String) {
+        cityName = city
+        countryName = country
+        isLocationAvailable = true
     }
 }
 

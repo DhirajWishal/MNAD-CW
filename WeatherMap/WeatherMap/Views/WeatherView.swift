@@ -17,13 +17,7 @@ struct WeatherView: View {
             ZStack(alignment:.leading) {
                 // Set the background color.
                 LinearGradient(
-                                    colors: model.getGradientColors(override: "Thunderstorm"),
-//                                    colors: model.getGradientColors(override: "Drizzle"),
-//                                    colors: model.getGradientColors(override: "Rain"),
-//                    colors: model.getGradientColors(override: "Snow"),
-//                                                    colors: model.getGradientColors(override: "Atmosphere"),
-//                                                    colors: model.getGradientColors(override: "Clear"),
-//                                                    colors: model.getGradientColors(override: "Clouds"),
+                    colors: model.getGradientColors(),
                     startPoint: .top,
                     endPoint: .bottom
                 )
@@ -61,7 +55,7 @@ struct WeatherView: View {
                 .padding()
                 .refreshable {
                     // Refresh the weather data.
-                    await model.refresh()
+                    await model.refreshAsync()
                 }
                 .navigationDestination(isPresented: $shouldShowLocationSearch) {
                     LocationView()

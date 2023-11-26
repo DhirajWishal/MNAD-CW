@@ -48,7 +48,7 @@ struct ContentView: View {
             // Load data if we don't have any already.
             if !model.isDataLoaded() {
                 // TODO: Access geolocation data and use that info.
-                model.loadWeatherData(latitude: "6.9271", longitude: "79.8612", useDummy: false)
+                model.loadWeatherData(useDummy: false)
             }
             else {
                 shouldRefresh = true
@@ -56,7 +56,8 @@ struct ContentView: View {
         }
         .task {
             if shouldRefresh {
-                await model.refresh()
+                await model.refreshAsync()
+                shouldRefresh = false
             }
         }
     }

@@ -45,12 +45,12 @@ struct ContentView: View {
         }
         .onAppear() {
             // TODO: Access geolocation data and use that info.
-             model.loadWeatherData(latitude: "6.9271", longitude: "79.8612", useDummy: true)
+            model.loadWeatherData(latitude: "6.9271", longitude: "79.8612", useDummy: false)
         }
     }
     
     private static func getRandomGradient() -> [Color] {
-        return WeatherPresets.getWeatherGradientColor(type: WeatherTypes.allCases.randomElement() ?? WeatherTypes.Atmosphere)
+        return WeatherPresets.getWeatherGradientColor(type: WeatherType.allCases.randomElement() ?? WeatherType.Atmosphere)
     }
 }
 

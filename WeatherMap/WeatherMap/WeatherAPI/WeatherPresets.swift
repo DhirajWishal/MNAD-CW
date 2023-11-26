@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-enum WeatherTypes:Int, CaseIterable {
+enum WeatherType:Int, CaseIterable {
     case Thunderstorm = 0
     case Drizzle = 1
     case Rain = 2
@@ -19,54 +19,72 @@ enum WeatherTypes:Int, CaseIterable {
 }
 
 struct WeatherPresets {
-    static let weatherColorCodes = [
-        WeatherTypes.Thunderstorm: Color(red: 45 / 255, green: 54 / 255, blue: 86 / 255),
-        WeatherTypes.Drizzle: Color(red: 140 / 255, green: 174 / 255, blue: 171 / 255),
-        WeatherTypes.Rain: Color(red: 197 / 255, green: 226 / 255, blue: 247 / 255),
-        WeatherTypes.Snow: Color(red: 99 / 255, green: 133 / 255, blue: 146 / 255),
-        WeatherTypes.Atmosphere: Color(red: 0 / 255, green: 153 / 255, blue: 221 / 255),
-        WeatherTypes.Clear: Color(red: 135 / 255, green: 203 / 255, blue: 222 / 255),
-        WeatherTypes.Clouds: Color(red: 114 / 255, green: 157 / 255, blue: 158 / 255)
-    ]
-    
     static let weatherTypeToString = [
-        WeatherTypes.Thunderstorm: "Thunderstorm",
-        WeatherTypes.Drizzle: "Drizzle",
-        WeatherTypes.Rain: "Rain",
-        WeatherTypes.Snow: "Snow",
-        WeatherTypes.Atmosphere: "Atmosphere",
-        WeatherTypes.Clear: "Clear",
-        WeatherTypes.Clouds: "Clouds"
+        WeatherType.Thunderstorm: "Thunderstorm",
+        WeatherType.Drizzle: "Drizzle",
+        WeatherType.Rain: "Rain",
+        WeatherType.Snow: "Snow",
+        WeatherType.Atmosphere: "Atmosphere",
+        WeatherType.Clear: "Clear",
+        WeatherType.Clouds: "Clouds"
     ]
     
     static let weatherStringToType = [
-        "Thunderstorm": WeatherTypes.Thunderstorm,
-        "Drizzle": WeatherTypes.Drizzle,
-        "Rain": WeatherTypes.Rain,
-        "Snow": WeatherTypes.Snow,
-        "Atmosphere": WeatherTypes.Atmosphere,
-        "Clear": WeatherTypes.Clear,
-        "Clouds": WeatherTypes.Clouds
+        "Thunderstorm": WeatherType.Thunderstorm,
+        "Drizzle": WeatherType.Drizzle,
+        "Rain": WeatherType.Rain,
+        "Snow": WeatherType.Snow,
+        "Atmosphere": WeatherType.Atmosphere,
+        "Clear": WeatherType.Clear,
+        "Clouds": WeatherType.Clouds
+    ]
+    
+    static let weatherColorCodes = [
+        WeatherType.Thunderstorm: Color(red: 45 / 255, green: 54 / 255, blue: 86 / 255),
+        WeatherType.Drizzle: Color(red: 140 / 255, green: 174 / 255, blue: 171 / 255),
+        WeatherType.Rain: Color(red: 197 / 255, green: 226 / 255, blue: 247 / 255),
+        WeatherType.Snow: Color(red: 99 / 255, green: 133 / 255, blue: 146 / 255),
+        WeatherType.Atmosphere: Color(red: 0 / 255, green: 153 / 255, blue: 221 / 255),
+        WeatherType.Clear: Color(red: 135 / 255, green: 203 / 255, blue: 222 / 255),
+        WeatherType.Clouds: Color(red: 114 / 255, green: 157 / 255, blue: 158 / 255)
+    ]
+    
+    static let weatherTypeToSystemImage = [
+        WeatherType.Thunderstorm: "cloud.bolt",
+        WeatherType.Drizzle: "cloud.drizzle",
+        WeatherType.Rain: "cloud.heavyrain",
+        WeatherType.Snow: "cloud.snow",
+        WeatherType.Atmosphere: "cloud.fog",
+        WeatherType.Clear: "sun.min",
+        WeatherType.Clouds: "cloud"
     ]
     
     public static func getColorList() -> [Color] {
         return weatherColorCodes.values.filter({ color in return true })
     }
     
-    public static func getWeatherColor(type: WeatherTypes) -> Color {
+    public static func getWeatherColor(type: WeatherType) -> Color {
         return WeatherPresets.weatherColorCodes[type] ?? .white
     }
     
     public static func getWeatherColor(type: String) -> Color {
-        return WeatherPresets.getWeatherColor(type: WeatherPresets.weatherStringToType[type] ?? WeatherTypes.Thunderstorm)
+        return WeatherPresets.getWeatherColor(type: WeatherPresets.weatherStringToType[type] ?? WeatherType.Thunderstorm)
     }
     
-    public static func getWeatherGradientColor(type: WeatherTypes) -> [Color] {
+    public static func getWeatherGradientColor(type: WeatherType) -> [Color] {
         let color = WeatherPresets.weatherColorCodes[type] ?? .white
         return [ color, color.opacity(0.5) ]
     }
     
     public static func getWeatherGradientColor(type: String) -> [Color] {
-        return WeatherPresets.getWeatherGradientColor(type: WeatherPresets.weatherStringToType[type] ?? WeatherTypes.Thunderstorm)
+        return WeatherPresets.getWeatherGradientColor(type: WeatherPresets.weatherStringToType[type] ?? WeatherType.Thunderstorm)
+    }
+    
+    public static func getWeatherSystemImage(type: WeatherType) -> String {
+        return WeatherPresets.weatherTypeToSystemImage[type] ?? ""
+    }
+    
+    public static func getWeatherSystemImage(type: String) -> String {
+        return getWeatherSystemImage(type: WeatherPresets.weatherStringToType[type] ?? WeatherType.Thunderstorm)
     }
 }

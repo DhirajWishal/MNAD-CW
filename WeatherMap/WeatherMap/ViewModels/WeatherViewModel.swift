@@ -84,12 +84,12 @@ import SwiftUI
     }
     
     public func getSunRise() -> String {
-        guard let data = weatherData else { return "00:00\nAM" }
+        guard let data = weatherData else { return "00:00 AM" }
         return decodeTimeFromUnix(value: data.current.sunRise)
     }
     
     public func getSunSet() -> String {
-        guard let data = weatherData else { return "00:00\nAM" }
+        guard let data = weatherData else { return "00:00 AM" }
         return decodeTimeFromUnix(value: data.current.sunSet)
     }
     
@@ -108,8 +108,8 @@ import SwiftUI
     }
     
     public func getPressure() -> String {
-        guard let data = weatherData else { return "0\nhPa" }
-        return String(data.current.pressure) + "\nhPa"
+        guard let data = weatherData else { return "0 hPa" }
+        return String(data.current.pressure) + " hPa"
     }
     
     public func getHumidity() -> String {
@@ -123,8 +123,8 @@ import SwiftUI
     }
     
     public func getWind() -> String {
-        guard let data = weatherData else { return "0\nKm/h" }
-        return String(format: "%.1f", data.current.windSpeed) + "\nKm/h"
+        guard let data = weatherData else { return "0 Km/h" }
+        return String(format: "%.1f", data.current.windSpeed) + " Km/h"
     }
     
     public func getHourlyForecast() -> [Hour] {
@@ -145,38 +145,8 @@ import SwiftUI
         let date = NSDate(timeIntervalSince1970: Double(value))
         
         let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm'\n'a"
+        formatter.dateFormat = "HH:mm a"
         
         return formatter.string(from: formatter.date(from: formatter.string(from: date as Date))!)
-    }
-    
-    // GUI helpers
-    public static func getSystemImageFromMain(main: String) -> String {
-        switch (main)
-        {
-        case "Thunderstorm":
-            return "cloud.bolt"
-            
-        case "Drizzle":
-            return "cloud.drizzle"
-            
-        case "Rain":
-            return "cloud.heavyrain"
-            
-        case "Snow":
-            return "cloud.snow"
-            
-        case "Atmosphere":
-            return "cloud.fog"
-            
-        case "Clear":
-            return "sun.min"
-            
-        case "Clouds":
-            return "cloud"
-            
-        default:
-            return ""
-        }
     }
 }

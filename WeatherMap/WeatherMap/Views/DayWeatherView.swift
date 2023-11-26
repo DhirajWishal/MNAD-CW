@@ -15,7 +15,7 @@ struct DayWeatherView: View {
             ZStack {
                 // Set the background color.
                 LinearGradient(
-                    colors: WeatherViewModel.getWeatherGradientColor(main: dayWeather.weather[0].main),
+                    colors: WeatherPresets.getWeatherGradientColor(type: dayWeather.weather[0].main),
                     startPoint: .top,
                     endPoint: .bottom
                 )

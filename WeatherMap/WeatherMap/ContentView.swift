@@ -10,8 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @State var model = WeatherViewModel()
     
-    @State var main = "Loading..."
-    @State var description = ""
+    @State var activeColorSet: [Color] = ContentView.getRandomGradient()
     
     var body: some View {
         VStack {
@@ -19,13 +18,39 @@ struct ContentView: View {
                 WeatherView(model: model)
             }
             else {
-                ProgressView()
+                // Inform the user that we're loading with a changing gradient.
+                ZStack {
+                    LinearGradient(colors: activeColorSet, startPoint: .top, endPoint: .bottom)
+                        .ignoresSafeArea()
+                        .onAppear() {
+                            withAnimation(.linear(duration: 5.0).repeatForever(autoreverses: true)) {
+                                activeColorSet = ContentView.getRandomGradient()
+                            }
+                        }
+                    
+                    VStack {
+                        Text("Weather Map")
+                            .font(.largeTitle)
+                            .foregroundStyle(.black)
+                            .bold()
+                        
+                        Spacer()
+                        
+                        ProgressView("Loading weather data...")
+                        
+                        Spacer()
+                    }
+                }
             }
         }
         .onAppear() {
             // TODO: Access geolocation data and use that info.
-            model.loadWeatherData(latitude: "6.9271", longitude: "79.8612", useDummy: false)
+             model.loadWeatherData(latitude: "6.9271", longitude: "79.8612", useDummy: true)
         }
+    }
+    
+    private static func getRandomGradient() -> [Color] {
+        return WeatherPresets.getWeatherGradientColor(type: WeatherTypes.allCases.randomElement() ?? WeatherTypes.Atmosphere)
     }
 }
 

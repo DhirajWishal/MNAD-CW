@@ -40,41 +40,9 @@ import SwiftUI
         }
     }
     
-    public static func getWeatherGradientColor(main: String) -> [Color] {
-        var color: Color
-        switch (main)
-        {
-        case "Thunderstorm":
-            color = Color(red: 45 / 255, green: 54 / 255, blue: 86 / 255)
-            
-        case "Drizzle":
-            color = Color(red: 140 / 255, green: 174 / 255, blue: 171 / 255)
-            
-        case "Rain":
-            color = Color(red: 197 / 255, green: 226 / 255, blue: 247 / 255)
-            
-        case "Snow":
-            color = Color(red: 99 / 255, green: 133 / 255, blue: 146 / 255)
-            
-        case "Atmosphere":
-            color = Color(red: 0 / 255, green: 153 / 255, blue: 221 / 255)
-            
-        case "Clear":
-            color = Color(red: 135 / 255, green: 203 / 255, blue: 222 / 255)
-            
-        case "Clouds":
-            color = Color(red: 114 / 255, green: 157 / 255, blue: 158 / 255)
-            
-        default:
-            return [ .white, .white ]
-        }
-        
-        return [ color, color.opacity(0.5) ]
-    }
-    
     public func getGradientColors(override: String? = nil) -> [Color] {
-        guard let data = weatherData else { return WeatherViewModel.getWeatherGradientColor(main: override ?? "") }
-        return WeatherViewModel.getWeatherGradientColor(main: data.current.weather[0].main)
+        guard let data = weatherData else { return WeatherPresets.getWeatherGradientColor(type: override ?? "") }
+        return WeatherPresets.getWeatherGradientColor(type: data.current.weather[0].main)
     }
     
     public func getSummary() -> String {

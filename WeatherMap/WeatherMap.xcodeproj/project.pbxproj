@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9C7353AB2B1377A700F3924D /* LocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C7353AA2B1377A700F3924D /* LocationView.swift */; };
 		9CC0DBB02B10BA6B0076BDEF /* WeatherMapApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC0DBAF2B10BA6B0076BDEF /* WeatherMapApp.swift */; };
 		9CC0DBB22B10BA6B0076BDEF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC0DBB12B10BA6B0076BDEF /* ContentView.swift */; };
 		9CC0DBB42B10BA6C0076BDEF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9CC0DBB32B10BA6C0076BDEF /* Assets.xcassets */; };
@@ -38,6 +39,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9C7353AA2B1377A700F3924D /* LocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationView.swift; sourceTree = "<group>"; };
 		9CC0DBAC2B10BA6B0076BDEF /* WeatherMap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeatherMap.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9CC0DBAF2B10BA6B0076BDEF /* WeatherMapApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherMapApp.swift; sourceTree = "<group>"; };
 		9CC0DBB12B10BA6B0076BDEF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -159,6 +161,7 @@
 			isa = PBXGroup;
 			children = (
 				9CC0DBE22B10DAC10076BDEF /* WeatherView.swift */,
+				9C7353AA2B1377A700F3924D /* LocationView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -297,6 +300,7 @@
 				9CC0DBB22B10BA6B0076BDEF /* ContentView.swift in Sources */,
 				9CC0DBDA2B10BE810076BDEF /* OpenWeatherMapProvider.swift in Sources */,
 				9CC0DBE32B10DAC10076BDEF /* WeatherView.swift in Sources */,
+				9C7353AB2B1377A700F3924D /* LocationView.swift in Sources */,
 				9CC0DBDC2B10C4800076BDEF /* WeatherData.swift in Sources */,
 				9CC0DBB02B10BA6B0076BDEF /* WeatherMapApp.swift in Sources */,
 			);

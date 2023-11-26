@@ -178,4 +178,34 @@ import SwiftUI
         
         return formatter.string(from: formatter.date(from: formatter.string(from: date as Date))!)
     }
+    
+    // GUI helpers
+    public static func getSystemImageFromMain(main: String) -> String {
+        switch (main)
+        {
+        case "Thunderstorm":
+            return "cloud.bolt"
+            
+        case "Drizzle":
+            return "cloud.drizzle"
+            
+        case "Rain":
+            return "cloud.heavyrain"
+            
+        case "Snow":
+            return "cloud.snow"
+            
+        case "Atmosphere":
+            return "cloud.fog"
+            
+        case "Clear":
+            return "sun.min"
+            
+        case "Clouds":
+            return "cloud"
+            
+        default:
+            return ""
+        }
+    }
 }

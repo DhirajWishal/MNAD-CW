@@ -93,7 +93,7 @@ class OpenWeatherMapProvider {
                 weather: [
                     Weather(
                         id: 0,
-                        main: "Cloudy",
+                        main: "Clouds",
                         description: "overcast clouds",
                         icon: "04n")
                 ]
@@ -115,7 +115,7 @@ class OpenWeatherMapProvider {
                     weather: [
                         Weather(
                             id: 0,
-                            main: "Cloudy",
+                            main: "Clouds",
                             description: "overcast clouds",
                             icon: "04n")
                     ],
@@ -136,7 +136,7 @@ class OpenWeatherMapProvider {
                     weather: [
                         Weather(
                             id: 0,
-                            main: "Cloudy",
+                            main: "Clouds",
                             description: "overcast clouds",
                             icon: "04n")
                     ],
@@ -174,7 +174,7 @@ class OpenWeatherMapProvider {
                     weather: [
                         Weather(
                             id: 0,
-                            main: "Cloudy",
+                            main: "Clouds",
                             description: "overcast clouds",
                             icon: "04n")
                     ],

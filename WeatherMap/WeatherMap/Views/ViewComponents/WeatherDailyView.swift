@@ -15,7 +15,8 @@ struct WeatherDailyView: View {
             VStack (spacing: 10) {
                 ForEach(model.getDailyForecast()) { forecast in
                     NavigationLink (destination: {
-                        DayWeatherView(dayWeather: forecast)
+                        // TODO: Design the day weather view.
+                        // DayWeatherView(dayWeather: forecast)
                     }) {
                         HStack {
                             Image(systemName: WeatherPresets.getWeatherSystemImage(type: forecast.weather[0].main))
@@ -32,6 +33,7 @@ struct WeatherDailyView: View {
                         }
                     }
                     .buttonStyle(.plain)
+                    .frame(height: 40)
                 }
             }
         }

@@ -13,19 +13,31 @@ struct ContentView: View {
     @State var activeColorSet: [Color] = ContentView.getRandomGradient()
     @State var shouldRefresh = false
     
+    @State var modelDataLoaded = false;
+    @State var modelDataLoadedReady = false;
+    
     var body: some View {
         VStack {
-            if model.isDataLoaded() {
+            if modelDataLoaded {
                 WeatherView(model: model)
-            }
-            else {
+            } else {
                 // Inform the user that we're loading with a changing gradient.
                 ZStack {
                     LinearGradient(colors: activeColorSet, startPoint: .top, endPoint: .bottom)
                         .ignoresSafeArea()
                         .onAppear() {
                             withAnimation(.linear(duration: 5.0).repeatForever(autoreverses: true)) {
-                                activeColorSet = ContentView.getRandomGradient()
+                                // This mechanism attempts to smoothen out the transition between random
+                                // color gradients to weather color gradient.
+                                if modelDataLoadedReady {
+                                    modelDataLoaded = true
+                                } else if model.isDataLoaded() {
+                                    activeColorSet = WeatherPresets.getWeatherGradientColor(type: model.getSummary())
+                                    
+                                    modelDataLoadedReady = true
+                                } else {
+                                    activeColorSet = ContentView.getRandomGradient()
+                                }
                             }
                         }
                     
@@ -51,12 +63,13 @@ struct ContentView: View {
                 model.loadWeatherData(useDummy: false)
             }
             else {
+                modelDataLoaded = true
                 shouldRefresh = true
             }
         }
         .task {
             if shouldRefresh {
-                await model.refreshAsync()
+//                await model.refreshAsync()
                 shouldRefresh = false
             }
         }

@@ -48,7 +48,6 @@ struct WeatherView: View {
                         
                         // Show the daily forcast.
                         WeatherDailyView(model: model)
-                        
                     }
                 }
                 .padding()

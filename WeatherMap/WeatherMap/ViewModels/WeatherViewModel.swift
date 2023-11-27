@@ -196,8 +196,8 @@ import SwiftUI
             weatherData = decodedData
             
             // Fallback to London coordinates if we don't have coordinate data.
-            latitude = String(weatherData?.lat ?? 51.5072)
-            longitude = String(weatherData?.lon ?? 0.1276)
+            latitude = String(decodedData.lat)
+            longitude = String(decodedData.lon)
         }
     }
 }

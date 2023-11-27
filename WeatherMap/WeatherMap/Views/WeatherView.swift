@@ -51,15 +51,25 @@ struct WeatherView: View {
                         WeatherDailyView(model: model)
                     }
                 }
+                .onAppear {
+                    // Set the refresh progress view's color to white.
+                    UIRefreshControl.appearance().tintColor = UIColor.white
+                }
                 .padding()
                 .refreshable {
                     // Refresh the weather data.
                     await model.refreshAsync()
                 }
                 .navigationDestination(isPresented: $shouldShowLocationSearch) {
-                    LocationView()
+                    LocationView(latitude: model.getLatitude(), longitude: model.getLongitude(), callback: locationUpdated)
                 }
             }
+        }
+    }
+    
+    private func locationUpdated(latitude: String, longitude: String) {
+        if model.getLatitude() != latitude || model.getLongitude() != longitude {
+            model.update(latitude: latitude, longitude: longitude)
         }
     }
 }

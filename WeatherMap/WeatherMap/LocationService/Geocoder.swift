@@ -12,6 +12,10 @@ extension CLLocation {
     func fetchCityAndCountry(completion: @escaping (_ city: String?, _ country:  String?, _ error: Error?) -> ()) {
         CLGeocoder().reverseGeocodeLocation(self) { completion($0?.first?.locality, $0?.first?.country, $1) }
     }
+    
+    func addressCompletion(addressString: String, handler: @escaping ([CLPlacemark]?, Error?) -> Void) {
+        CLGeocoder().geocodeAddressString(addressString, completionHandler: handler)
+    }
 }
 
 @Observable class Geocoder {
@@ -29,6 +33,23 @@ extension CLLocation {
             }
             
             completed(city, country)
+        }
+    }
+    
+    public static func addressCompletion(address: String, handler: @escaping ([CLPlacemark]) -> Void) {
+        let _ = CLLocation().addressCompletion(addressString: address) { (placemark, error) in
+            guard let placemark = placemark else { return }
+            handler(placemark)
+        }
+    }
+    
+    public static func fetchCoordinates(address: String, handler: @escaping (String, String) -> Void) {
+        let _ = CLLocation().addressCompletion(addressString: address) { (placemark, error) in
+            guard let placemark = placemark else { return }
+            guard let first = placemark.first else { return }
+            guard let location = first.location else { return }
+            
+            handler(String(location.coordinate.latitude), String(location.coordinate.longitude))
         }
     }
 }

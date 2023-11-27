@@ -11,9 +11,9 @@ struct WeatherSourceView: View {
     var body: some View {
         VStack {
             HStack {
-                Text("Source")
-                    .font(.subheadline)
-                    .foregroundStyle(.white)
+//                Text("Source")
+//                    .font(.subheadline)
+//                    .foregroundStyle(.white)
                 
                 Spacer()
                 

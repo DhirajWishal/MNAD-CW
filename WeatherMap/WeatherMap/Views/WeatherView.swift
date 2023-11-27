@@ -39,12 +39,13 @@ struct WeatherView: View {
                         WeatherSourceView()
                         
                         Divider()
-                            .background(.white)
+                            .overlay(.white)
                         
                         // Show today's forecast hourly
                         WeatherHourlyView(model: model)
                         
                         Divider()
+                            .overlay(.white)
                         
                         // Show the daily forcast.
                         WeatherDailyView(model: model)

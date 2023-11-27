@@ -33,6 +33,7 @@ struct WeatherTopView: View {
                             .bold()
                     } else {
                         ProgressView()
+                            .tint(.white)
                     }
                     
                     Spacer()
@@ -55,7 +56,7 @@ struct WeatherTopView: View {
                     .multilineTextAlignment(.leading)
                 
                 Divider()
-                    .background(.white)
+                    .overlay(.white)
                 
                 HStack {
                     Image(systemName: WeatherPresets.getWeatherSystemImage(type: model.getSummary()))

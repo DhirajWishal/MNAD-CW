@@ -13,11 +13,7 @@ import SwiftUI
 
 @Observable class WeatherViewModel {
     private var provider = OpenWeatherMapProvider();
-    private var weatherData: WeatherData? = nil {
-        didSet {
-            saveData()
-        }
-    }
+    private var weatherData: WeatherData? = nil
     
     private var latitude = "51.5072"
     private var longitude = "0.1276"
@@ -170,6 +166,11 @@ import SwiftUI
     
     private func onWeatherDataLoaded(data: WeatherData) {
         weatherData = data
+        
+        latitude = String(data.lat)
+        longitude = String(data.lon)
+        
+        saveData()
     }
     
     private func decodeTimeFromUnix(value: Int) -> String {
@@ -195,7 +196,6 @@ import SwiftUI
         if let unwrappedData = data, let decodedData = try? JSONDecoder().decode(WeatherData.self, from: unwrappedData) {
             weatherData = decodedData
             
-            // Fallback to London coordinates if we don't have coordinate data.
             latitude = String(decodedData.lat)
             longitude = String(decodedData.lon)
         }

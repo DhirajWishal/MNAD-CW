@@ -14,18 +14,18 @@ struct LocationView: View {
     
     let updatedCallback: (String, String) -> Void
     
-    @State var searchString = "" {
-        didSet {
-            Geocoder.addressCompletion(address: searchString, handler: onAddressCompletion)
-        }
-    }
+    @State var searchString = ""
     @State var searchPlaceholder = "City, Country"
     @State var searchPredictions: [String] = []
     @State var selectedSearchString = ""
     
+    @State var placemarks = Dictionary<String, CLPlacemark>()
+    
     @State var cameraPosition: MapCameraPosition = MapCameraPosition.automatic
     @State var latitude = ""
     @State var longitude = ""
+    
+    @State var showMoreInfo = false
     
     @FocusState var isFocusedOnEditing: Bool
     
@@ -35,13 +35,15 @@ struct LocationView: View {
         self.updatedCallback = callback
         self.latitude = latitude
         self.longitude = longitude
+        
+        updateLocation()
     }
     
     var body: some View {
         NavigationStack {
             ZStack {
                 Map(position: $cameraPosition) {
-                    Annotation("", coordinate: getCenterCoordinate(coordinates: cameraPosition.camera?.centerCoordinate)) {
+                    Annotation("", coordinate: getCenterCoordinate(coordinates: getCoordinates())) {
                         Image(systemName: "mappin").foregroundColor(.red)
                     }
                 }
@@ -55,54 +57,111 @@ struct LocationView: View {
                 }
                 
                 VStack {
-                    HStack {
-                        TextField(searchPlaceholder, text: $searchString)
-                            .textFieldStyle(.roundedBorder)
-                            .onChange(of: searchString, {
-                                Geocoder.addressCompletion(address: searchString, handler: onAddressCompletion)
-                            })
-                            .focused($isFocusedOnEditing)
-                        
-                        Button(action: {
-                            onReverseLocationSearch()
-                        }, label: {
-                            Image(systemName: "magnifyingglass")
-                                .bold()
-                        })
-                        .tint(.black)
-                    }
-                    
-                    if selectedSearchString != searchString && !searchPredictions.isEmpty {
-                        List {
-                            ForEach(searchPredictions, id: \.self) { prediction in
-                                Button(action: {
-                                    searchString = prediction
-                                    selectedSearchString = prediction
-                                    
-                                    updateLocation()
-                                    updateCamera()
-                                    
-                                    isFocusedOnEditing = false
-                                }, label: {
-                                    Text(prediction)
+                    VStack {
+                        HStack {
+                            TextField(searchPlaceholder, text: $searchString)
+                                .textFieldStyle(.roundedBorder)
+                                .onChange(of: searchString, {
+                                    Geocoder.addressCompletion(address: searchString, handler: onAddressCompletion)
                                 })
-                            }
+                                .focused($isFocusedOnEditing)
+                                .onSubmit {
+                                    updateLocation()
+                                    onReverseLocationSearch()
+                                    
+                                    showMoreInfo = true
+                                    
+                                    searchPredictions = []
+                                }
+                            
+                            Button(action: {
+                                onReverseLocationSearch()
+                            }, label: {
+                                Image(systemName: "magnifyingglass")
+                                    .bold()
+                            })
+                            .tint(.black)
                         }
-                        .listStyle(.plain)
+                        
+                        if selectedSearchString != searchString && !searchPredictions.isEmpty {
+                            List {
+                                ForEach(searchPredictions, id: \.self) { prediction in
+                                    Button(action: {
+                                        searchString = prediction
+                                        selectedSearchString = prediction
+                                        
+                                        updateLocation()
+                                        onReverseLocationSearch()
+                                        
+                                        isFocusedOnEditing = false
+                                        
+                                        withAnimation {
+                                            showMoreInfo = true
+                                        }
+                                    }, label: {
+                                        Text(prediction)
+                                    })
+                                }
+                            }
+                            .listStyle(.plain)
+                            .opacity(0.75)
+                        }
+                        
+                        Spacer()
                     }
+                    .padding()
                     
-                    Spacer()
+                    if showMoreInfo {
+                        ZStack {
+                            Color.white
+                            
+                            VStack {
+                                VStack(alignment: .leading) {
+                                    Text("Areas of Interests")
+                                        .font(.title)
+                                        .bold()
+                                    
+                                    List {
+                                        ForEach(getAreasOfInterest(), id: \.self) { interest in
+                                            Text(interest)
+                                        }
+                                    }
+                                    .listStyle(.plain)
+                                }
+                                
+                                Button(action: {
+                                    withAnimation {
+                                        showMoreInfo = false
+                                    }
+                                }, label: {
+                                  Text("Okay")
+                                        .frame(minWidth: 150)
+                                })
+                                .buttonStyle(.bordered)
+                            }
+                            .padding()
+                        }
+                        .transition(.move(edge: .bottom))
+                        .clipShape(RoundedRectangle(cornerRadius: 25.0))
+                        .background(RoundedRectangle(cornerRadius: 25.0).shadow(radius: 10))
+                        .padding()
+                    }
                 }
-                .padding()
+//                .padding()
             }
-            .toolbarBackground(.automatic, for: .automatic)
-        }
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem {
-                Button("Done", action: {
-                    dismiss()
-                })
+//            .toolbarBackground(
+//                LinearGradient(colors: [.white, .white], startPoint: .top, endPoint: .bottom),
+//                for: .automatic)
+            .toolbar {
+                ToolbarItem {
+                    Button(action: {
+                        updatedCallback(latitude, longitude)
+                        dismiss()
+                    }, label: {
+                        Text("Done")
+                            .frame(maxWidth: 150)
+                    })
+                }
             }
         }
         .onAppear {
@@ -111,32 +170,43 @@ struct LocationView: View {
         }
     }
     
-    private func updateCamera() {
-        guard let latitude = Double(latitude), let longitude = Double(longitude) else { return }
+    private func getCoordinates() -> CLLocationCoordinate2D {
+        guard let latitude = Double(latitude), let longitude = Double(longitude) else {
+            return CLLocationCoordinate2D(latitude: 0, longitude: 0)
+        }
         
-        let coordinates = MKCoordinateRegion(
-            center: CLLocationCoordinate2D(
-                latitude: latitude,
-                longitude: longitude
-            ),
-            span: MKCoordinateSpan(latitudeDelta: 0.5, longitudeDelta: 0.5)
+        return CLLocationCoordinate2D(
+            latitude: latitude,
+            longitude: longitude
+        )
+    }
+    
+    private func updateCamera() {
+        let region = MKCoordinateRegion(
+            center: getCoordinates(),
+            span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
         )
         
-        self.cameraPosition = MapCameraPosition.region(coordinates)
+        cameraPosition = MapCameraPosition.region(region)
     }
     
     private func updateLocation() {
         Geocoder.fetchLocation(latitude: latitude, longitude: longitude, completed: { city, country in
             searchPlaceholder = "\(city), \(country)"
+            searchString = "\(city), \(country)"
         })
     }
     
     private func onAddressCompletion(placemarks: [CLPlacemark]) {
-        searchPredictions = []
+        self.searchPredictions = []
+        self.placemarks = Dictionary<String, CLPlacemark>()
         
         placemarks.forEach({ placemark in
             if let city = placemark.locality, let country = placemark.country {
-                searchPredictions.append("\(city), \(country)")
+                let prediction = "\(city), \(country)"
+                
+                self.searchPredictions.append(prediction)
+                self.placemarks[prediction] = placemark
             }
         })
     }
@@ -145,10 +215,10 @@ struct LocationView: View {
         Geocoder.fetchCoordinates(address: searchString, handler: { latitude, longitude in
             self.latitude = latitude
             self.longitude = longitude
+            
+            updateLocation()
+            updateCamera()
         })
-        
-        updateLocation()
-        updateCamera()
     }
     
     private func getCenterCoordinate(coordinates: CLLocationCoordinate2D?) -> CLLocationCoordinate2D {
@@ -165,7 +235,13 @@ struct LocationView: View {
                 longitude: longitude
             )
         }
+        
         return coordinates
+    }
+    
+    private func getAreasOfInterest() -> [String] {
+        guard let placemark = placemarks[searchString], let interests = placemark.areasOfInterest else { return [] }
+        return interests
     }
 }
 

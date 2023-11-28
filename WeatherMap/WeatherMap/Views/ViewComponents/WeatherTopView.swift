@@ -42,7 +42,8 @@ struct WeatherTopView: View {
                     Button(action: {
                         shouldShowLocationSearch = true
                     }, label: {
-                        Image(systemName: "location.fill")
+//                        Image(systemName: "location.fill")
+                        Image(systemName: "map.fill")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 25, height: 25)

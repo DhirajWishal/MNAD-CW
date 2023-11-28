@@ -19,13 +19,17 @@ struct LocationView: View {
     @State var searchPredictions: [String] = []
     @State var selectedSearchString = ""
     
+    @State var regionSpan = 0.1
+    
     @State var placemarks = Dictionary<String, CLPlacemark>()
+    @State var areasOfInterest: [String] = []
     
     @State var cameraPosition: MapCameraPosition = MapCameraPosition.automatic
     @State var latitude = ""
     @State var longitude = ""
     
     @State var showMoreInfo = false
+    @State var showPrediction = false
     
     @FocusState var isFocusedOnEditing: Bool
     
@@ -50,10 +54,10 @@ struct LocationView: View {
                 .onMapCameraChange { context in
                     print(context.camera.centerCoordinate)
                     
-                    self.latitude = String(format: "%.4f", context.camera.centerCoordinate.latitude)
-                    self.longitude = String(format: "%.4f", context.camera.centerCoordinate.longitude)
-                    
-                    updateLocation()
+//                    self.latitude = String(format: "%.4f", context.camera.centerCoordinate.latitude)
+//                    self.longitude = String(format: "%.4f", context.camera.centerCoordinate.longitude)
+//                    
+//                    updateLocation()
                 }
                 
                 VStack {
@@ -69,13 +73,16 @@ struct LocationView: View {
                                     updateLocation()
                                     onReverseLocationSearch()
                                     
-                                    showMoreInfo = true
+                                    showAreasOfInterest()
                                     
-                                    searchPredictions = []
+                                    showPrediction = false
                                 }
                             
                             Button(action: {
                                 onReverseLocationSearch()
+                                showAreasOfInterest()
+                                
+                                showPrediction = false
                             }, label: {
                                 Image(systemName: "magnifyingglass")
                                     .bold()
@@ -83,7 +90,7 @@ struct LocationView: View {
                             .tint(.black)
                         }
                         
-                        if selectedSearchString != searchString && !searchPredictions.isEmpty {
+                        if isFocusedOnEditing && showPrediction {
                             List {
                                 ForEach(searchPredictions, id: \.self) { prediction in
                                     Button(action: {
@@ -95,9 +102,7 @@ struct LocationView: View {
                                         
                                         isFocusedOnEditing = false
                                         
-                                        withAnimation {
-                                            showMoreInfo = true
-                                        }
+                                        showAreasOfInterest()
                                     }, label: {
                                         Text(prediction)
                                     })
@@ -108,21 +113,55 @@ struct LocationView: View {
                         }
                         
                         Spacer()
+                        
+                        if !showMoreInfo {
+                            VStack {
+                                HStack {
+                                    Spacer()
+                                    
+                                    Button (action: {
+                                        regionSpan -= regionSpan / 2
+                                        updateCamera()
+                                    }, label: {
+                                        Image(systemName: "plus.magnifyingglass")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 25, height: 25)
+                                    })
+                                    .foregroundStyle(.black)
+                                }
+                                
+                                HStack {
+                                    Spacer()
+                                    
+                                    Button (action: {
+                                        regionSpan += regionSpan / 2
+                                        updateCamera()
+                                    }, label: {
+                                        Image(systemName: "minus.magnifyingglass")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 25, height: 25)
+                                    })
+                                    .foregroundStyle(.black)
+                                }
+                            }
+                        }
                     }
                     .padding()
                     
                     if showMoreInfo {
                         ZStack {
                             Color.white
-                            
+                                                        
                             VStack {
                                 VStack(alignment: .leading) {
-                                    Text("Areas of Interests")
+                                    Text("Areas of Interest")
                                         .font(.title)
                                         .bold()
                                     
                                     List {
-                                        ForEach(getAreasOfInterest(), id: \.self) { interest in
+                                        ForEach(areasOfInterest, id: \.self) { interest in
                                             Text(interest)
                                         }
                                     }
@@ -170,6 +209,18 @@ struct LocationView: View {
         }
     }
     
+    private func showAreasOfInterest() {
+        areasOfInterest = getAreasOfInterest()
+        
+        Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 1 /* seconds */ * 1000 /* milliseconds */ * 1000 /* microseconds */ * 1000 /* nanoseconds */)
+            
+            withAnimation {
+                showMoreInfo = !areasOfInterest.isEmpty
+            }
+        }
+    }
+    
     private func getCoordinates() -> CLLocationCoordinate2D {
         guard let latitude = Double(latitude), let longitude = Double(longitude) else {
             return CLLocationCoordinate2D(latitude: 0, longitude: 0)
@@ -184,7 +235,7 @@ struct LocationView: View {
     private func updateCamera() {
         let region = MKCoordinateRegion(
             center: getCoordinates(),
-            span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+            span: MKCoordinateSpan(latitudeDelta: regionSpan, longitudeDelta: regionSpan)
         )
         
         cameraPosition = MapCameraPosition.region(region)
@@ -209,6 +260,8 @@ struct LocationView: View {
                 self.placemarks[prediction] = placemark
             }
         })
+        
+        showPrediction = !searchPredictions.isEmpty
     }
     
     private func onReverseLocationSearch() {

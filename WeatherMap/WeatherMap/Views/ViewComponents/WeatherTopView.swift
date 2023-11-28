@@ -16,21 +16,30 @@ struct WeatherTopView: View {
     @State var cityName = ""
     @State var countryName = ""
     
+    @State var showAreasOfInterest = false
+    
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
                 HStack {
                     if isLocationAvailable {
-                        Text(cityName)
-                            .font(.largeTitle)
-                            .foregroundStyle(.white)
-                            .multilineTextAlignment(.leading)
-                            .bold()
-                        
-                        Text(countryName)
-                            .foregroundStyle(.white)
-                            .multilineTextAlignment(.leading)
-                            .bold()
+                        Button(action: {
+                            showAreasOfInterest = true
+                        }, label: {
+                            Text(cityName)
+                                .font(.largeTitle)
+                                .foregroundStyle(.white)
+                                .multilineTextAlignment(.leading)
+                                .bold()
+                            
+                            Text(countryName)
+                                .foregroundStyle(.white)
+                                .multilineTextAlignment(.leading)
+                                .bold()
+                            
+                            Image(systemName: "arrowshape.turn.up.left.fill")
+                        })
+                        .tint(.white)
                     } else {
                         ProgressView()
                             .tint(.white)
@@ -81,6 +90,9 @@ struct WeatherTopView: View {
         }
         .onAppear() {
             Geocoder.fetchLocation(latitude: model.getLatitude(), longitude: model.getLongitude(), completed: onLocationNameFetched)
+        }
+        .navigationDestination(isPresented: $showAreasOfInterest) {
+            TouristAttractionsView()
         }
     }
     

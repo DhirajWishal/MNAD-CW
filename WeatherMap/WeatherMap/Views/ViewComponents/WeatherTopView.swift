@@ -37,7 +37,7 @@ struct WeatherTopView: View {
                                 .multilineTextAlignment(.leading)
                                 .bold()
                             
-                            Image(systemName: "arrowshape.turn.up.left.fill")
+                            Image(systemName: "arrow.up.forward.app")
                         })
                         .tint(.white)
                     } else {

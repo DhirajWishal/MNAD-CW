@@ -87,4 +87,12 @@ struct WeatherPresets {
     public static func getWeatherSystemImage(type: String) -> String {
         return getWeatherSystemImage(type: WeatherPresets.weatherStringToType[type] ?? WeatherType.Thunderstorm)
     }
+    
+    public static func getDefaultLatitude() -> String {
+        return "51.5072"
+    }
+    
+    public static func getDefaultLongitude() -> String {
+        return "0.1276"
+    }
 }

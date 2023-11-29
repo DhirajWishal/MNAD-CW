@@ -11,6 +11,7 @@ import MapKit
 
 struct LocationView: View {
     let locationManager = LocationManager()
+    let model = LocationViewModel()
     
     let updatedCallback: (String, String) -> Void
     
@@ -20,9 +21,6 @@ struct LocationView: View {
     @State var selectedSearchString = ""
     
     @State var regionSpan = 0.1
-    
-    @State var placemarks = Dictionary<String, CLPlacemark>()
-    @State var areasOfInterest: [String] = []
     
     @State var cameraPosition: MapCameraPosition = MapCameraPosition.automatic
     @State var latitude = ""
@@ -46,18 +44,18 @@ struct LocationView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Map(position: $cameraPosition) {
-                    Annotation("", coordinate: getCenterCoordinate(coordinates: getCoordinates())) {
-                        Image(systemName: "mappin").foregroundColor(.red)
+                MapReader { reader in
+                    Map(position: $cameraPosition, interactionModes: .all) {
+                        Annotation("", coordinate: getCenterCoordinate(coordinates: getCoordinates())) {
+                            Image(systemName: "mappin").foregroundColor(.red)
+                        }
                     }
-                }
-                .onMapCameraChange { context in
-                    print(context.camera.centerCoordinate)
-                    
-//                    self.latitude = String(format: "%.4f", context.camera.centerCoordinate.latitude)
-//                    self.longitude = String(format: "%.4f", context.camera.centerCoordinate.longitude)
-//                    
-//                    updateLocation()
+                    .onTapGesture { screenCoord in
+                        onLocationTapped(coordinates: reader.convert(screenCoord, from: .local))
+                    }
+                    .onMapCameraChange { context in
+                        print(context.camera.centerCoordinate)
+                    }
                 }
                 
                 VStack {
@@ -72,15 +70,13 @@ struct LocationView: View {
                                 .onSubmit {
                                     updateLocation()
                                     onReverseLocationSearch()
-                                    
-                                    showAreasOfInterest()
-                                    
+                                                                        
                                     showPrediction = false
                                 }
+                                .opacity(0.75)
                             
                             Button(action: {
                                 onReverseLocationSearch()
-                                showAreasOfInterest()
                                 
                                 showPrediction = false
                             }, label: {
@@ -101,8 +97,6 @@ struct LocationView: View {
                                         onReverseLocationSearch()
                                         
                                         isFocusedOnEditing = false
-                                        
-                                        showAreasOfInterest()
                                     }, label: {
                                         Text(prediction)
                                     })
@@ -151,46 +145,14 @@ struct LocationView: View {
                     .padding()
                     
                     if showMoreInfo {
-                        ZStack {
-                            Color.white
-                                                        
-                            VStack {
-                                VStack(alignment: .leading) {
-                                    Text("Areas of Interest")
-                                        .font(.title)
-                                        .bold()
-                                    
-                                    List {
-                                        ForEach(areasOfInterest, id: \.self) { interest in
-                                            Text(interest)
-                                        }
-                                    }
-                                    .listStyle(.plain)
-                                }
-                                
-                                Button(action: {
-                                    withAnimation {
-                                        showMoreInfo = false
-                                    }
-                                }, label: {
-                                  Text("Okay")
-                                        .frame(minWidth: 150)
-                                })
-                                .buttonStyle(.bordered)
-                            }
-                            .padding()
-                        }
-                        .transition(.move(edge: .bottom))
-                        .clipShape(RoundedRectangle(cornerRadius: 25.0))
-                        .background(RoundedRectangle(cornerRadius: 25.0).shadow(radius: 10))
-                        .padding()
+                        LocationInfoView(showMoreInfo: $showMoreInfo, locationInfo: model.locationInfo)
                     }
                 }
-//                .padding()
+                //                .padding()
             }
-//            .toolbarBackground(
-//                LinearGradient(colors: [.white, .white], startPoint: .top, endPoint: .bottom),
-//                for: .automatic)
+            //            .toolbarBackground(
+            //                LinearGradient(colors: [.white, .white], startPoint: .top, endPoint: .bottom),
+            //                for: .automatic)
             .toolbar {
                 ToolbarItem {
                     Button(action: {
@@ -209,16 +171,21 @@ struct LocationView: View {
         }
     }
     
-    private func showAreasOfInterest() {
-        areasOfInterest = getAreasOfInterest()
+    private func onLocationTapped(coordinates: CLLocationCoordinate2D?) {
+        guard let coordinates = coordinates else { return }
         
-        Task { @MainActor in
-            try? await Task.sleep(nanoseconds: 1 /* seconds */ * 1000 /* milliseconds */ * 1000 /* microseconds */ * 1000 /* nanoseconds */)
-            
+        latitude = String(coordinates.latitude)
+        longitude = String(coordinates.longitude)
+        
+        showLocationInfo()
+    }
+    
+    private func showLocationInfo() {
+        model.update(latitude: latitude, longitude: longitude, completed: { _, _ in
             withAnimation {
-                showMoreInfo = !areasOfInterest.isEmpty
+                showMoreInfo = true
             }
-        }
+        })
     }
     
     private func getCoordinates() -> CLLocationCoordinate2D {
@@ -246,18 +213,18 @@ struct LocationView: View {
             searchPlaceholder = "\(city), \(country)"
             searchString = "\(city), \(country)"
         })
+        
+        showLocationInfo()
     }
     
     private func onAddressCompletion(placemarks: [CLPlacemark]) {
         self.searchPredictions = []
-        self.placemarks = Dictionary<String, CLPlacemark>()
         
         placemarks.forEach({ placemark in
             if let city = placemark.locality, let country = placemark.country {
                 let prediction = "\(city), \(country)"
                 
                 self.searchPredictions.append(prediction)
-                self.placemarks[prediction] = placemark
             }
         })
         
@@ -271,6 +238,7 @@ struct LocationView: View {
             
             updateLocation()
             updateCamera()
+            showLocationInfo()
         })
     }
     
@@ -291,13 +259,8 @@ struct LocationView: View {
         
         return coordinates
     }
-    
-    private func getAreasOfInterest() -> [String] {
-        guard let placemark = placemarks[searchString], let interests = placemark.areasOfInterest else { return [] }
-        return interests
-    }
 }
 
 #Preview {
-    LocationView(latitude: "51.5072", longitude: "0.1276", callback: { (lat, lon) in })
+    LocationView(latitude: WeatherPresets.getDefaultLatitude(), longitude: WeatherPresets.getDefaultLongitude(), callback: { (lat, lon) in })
 }

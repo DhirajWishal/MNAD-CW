@@ -15,8 +15,8 @@ import SwiftUI
     private var provider = OpenWeatherMapProvider();
     private var weatherData: WeatherData? = nil
     
-    private var latitude = "51.5072"
-    private var longitude = "0.1276"
+    private var latitude = WeatherPresets.getDefaultLatitude()
+    private var longitude = WeatherPresets.getDefaultLongitude()
     
     init(dummyDataRequired: Bool? = nil) {
         guard let _ = dummyDataRequired else {

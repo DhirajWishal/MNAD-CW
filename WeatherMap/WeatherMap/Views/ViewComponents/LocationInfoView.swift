@@ -24,17 +24,20 @@ struct LocationInfoView: View {
                             .font(.title)
                             .bold()
                         
-                        Text(locationInfo.country)
+                        Text("(\(locationInfo.latitude), \(locationInfo.longitude))")
+                            .foregroundStyle(.gray)
                     }
                     
-                    Text("(\(locationInfo.latitude), \(locationInfo.longitude))")
+                    Text(locationInfo.country)
                     
-                    List {
-                        ForEach(locationInfo.areasOfInterest, id: \.self) { area in
-                            Text(area)
+                    ScrollView(showsIndicators: false) {
+                        List {
+                            ForEach(locationInfo.areasOfInterest, id: \.self) { area in
+                                Text(area)
+                            }
                         }
+                        .listStyle(.plain)
                     }
-                    .listStyle(.plain)
                 }
                 
                 Spacer()

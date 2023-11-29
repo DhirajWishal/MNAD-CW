@@ -22,8 +22,8 @@ import Observation
             
             self.locationInfo.city = city
             self.locationInfo.country = country
-            self.locationInfo.latitude = String(coordinates.latitude)
-            self.locationInfo.longitude = String(coordinates.longitude)
+            self.locationInfo.latitude = String(format: "%.4f", coordinates.latitude)
+            self.locationInfo.longitude = String(format: "%.4f", coordinates.longitude)
             self.locationInfo.timeZone = timeZone
             self.locationInfo.areasOfInterest = areasOfInterest
             

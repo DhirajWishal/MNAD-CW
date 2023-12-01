@@ -16,7 +16,8 @@ import Observation
         super.init()
         
         locationManager.delegate = self
-        locationManager.requestAlwaysAuthorization()
+//        locationManager.requestAlwaysAuthorization()
+        locationManager.requestWhenInUseAuthorization()
         print("Location authorization requested.")
     }
     

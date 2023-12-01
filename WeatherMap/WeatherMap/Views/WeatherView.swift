@@ -14,8 +14,9 @@ struct WeatherView: View {
     
     var body: some View {
         NavigationStack {
-            ZStack(alignment:.leading) {
+            ZStack(alignment: .leading) {
                 // Set the background color.
+                // TODO: Switch themes depending on the time.
                 LinearGradient(
                     colors: model.getGradientColors(),
                     startPoint: .top,
@@ -25,7 +26,7 @@ struct WeatherView: View {
                 
                 // Main content stack.
                 ScrollView(showsIndicators: false) {
-                    VStack(alignment: .leading) {
+                    VStack(alignment: .leading) {	
                         // Show the location information and time.
                         WeatherTopView(model: model, shouldShowLocationSearch: $shouldShowLocationSearch)
                         

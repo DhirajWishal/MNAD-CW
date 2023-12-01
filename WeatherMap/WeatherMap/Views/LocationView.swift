@@ -23,6 +23,10 @@ struct LocationView: View {
     @State var regionSpan = 0.1
     
     @State var cameraPosition: MapCameraPosition = MapCameraPosition.automatic
+    
+//    // To get the user location.
+//    @State var cameraPosition: MapCameraPosition = MapCameraPosition.userLocation(fallback: MapCameraPosition.automatic)
+    
     @State var latitude = ""
     @State var longitude = ""
     
@@ -38,6 +42,9 @@ struct LocationView: View {
         self.latitude = latitude
         self.longitude = longitude
         
+        self.latitude = String(format: "%.4f", cameraPosition.camera?.centerCoordinate.latitude ?? 0)
+        self.longitude = String(format: "%.4f", cameraPosition.camera?.centerCoordinate.longitude ?? 0)
+        
         updateLocation()
     }
     
@@ -49,6 +56,13 @@ struct LocationView: View {
                         Annotation("", coordinate: getCenterCoordinate(coordinates: getCoordinates())) {
                             Image(systemName: "mappin").foregroundColor(.red)
                         }
+                    }
+                    .mapControls {
+                        // To reolocate back to user.
+                        MapUserLocationButton()
+                        
+                        // To switch from 2D to 3D
+                        MapPitchToggle()
                     }
                     .onTapGesture { screenCoord in
                         onLocationTapped(coordinates: reader.convert(screenCoord, from: .local))
@@ -148,11 +162,7 @@ struct LocationView: View {
                         LocationInfoView(showMoreInfo: $showMoreInfo, locationInfo: model.locationInfo)
                     }
                 }
-                //                .padding()
             }
-            //            .toolbarBackground(
-            //                LinearGradient(colors: [.white, .white], startPoint: .top, endPoint: .bottom),
-            //                for: .automatic)
             .toolbar {
                 ToolbarItem {
                     Button(action: {

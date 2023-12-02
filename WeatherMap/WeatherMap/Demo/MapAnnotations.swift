@@ -31,21 +31,75 @@ struct SubLocationDTO: Codable, Identifiable {
 
 struct MapAnnotations: View {
     @State private var locations: [SubLocationDTO] = []
+    @State private var searchResults: [MKMapItem] = []
+    
+    @State private var shouldShowDescription = false
     
     var body: some View {
         VStack {
             if locations.isEmpty {
                 Text("No locations")
             } else {
-                Map {
-                    ForEach(locations) { location in
-                        Marker(location.name, coordinate: location.coordinate)
+                ZStack {
+                    Map {
+                        ForEach(locations) { location in
+                            Marker(location.name, coordinate: location.coordinate)
+                        }
+                    }
+                    
+                    if shouldShowDescription {
+                        VStack {
+                            ScrollView(showsIndicators: false) {
+                                ForEach(searchResults, id: \.self) { result in
+                                    Text(result.name ?? "")
+                                        .multilineTextAlignment(.center)
+                                    Text(result.phoneNumber ?? "")
+                                    
+                                    Spacer()
+                                }
+                            }
+                            .frame(width: UIScreen.main.bounds.width)
+                            
+                            Spacer()
+                            
+                            Button("Close", action: {
+                                withAnimation {
+                                    shouldShowDescription = false
+                                }
+                            })
+                        }
+                        .background(.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 25.0))
+                        .transition(.move(edge: .bottom))
                     }
                 }
             }
         }
         .onAppear {
             loadDataFromBundle()
+            
+            let request = MKLocalSearch.Request()
+            request.naturalLanguageQuery = "landmarks"
+            request.resultTypes = .pointOfInterest
+            request.region = MKCoordinateRegion(
+                center: CLLocationCoordinate2D(latitude: 0, longitude: 0),
+                span: MKCoordinateSpan (latitudeDelta: 0.0125, longitudeDelta: 0.0125)
+            )
+            
+            Task {
+                let search = MKLocalSearch(request: request)
+                let response = try? await search.start()
+                searchResults = response?.mapItems ?? []
+                
+                if !searchResults.isEmpty {
+                    Task {
+                        await try? Task.sleep(nanoseconds: 1 * 1000 * 1000 * 1000)
+                        withAnimation {
+                            shouldShowDescription = true
+                        }
+                    }
+                }
+            }
         }
     }
     
@@ -54,7 +108,7 @@ struct MapAnnotations: View {
             print("Could not able to find the file")
             return
         }
-         
+        
         do {
             let rawData = try Data(contentsOf: fileURL)
             

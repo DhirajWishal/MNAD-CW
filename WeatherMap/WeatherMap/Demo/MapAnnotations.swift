@@ -93,7 +93,7 @@ struct MapAnnotations: View {
                 
                 if !searchResults.isEmpty {
                     Task {
-                        await try? Task.sleep(nanoseconds: 1 * 1000 * 1000 * 1000)
+                        try? await Task.sleep(nanoseconds: 1 * 1000 * 1000 * 1000)
                         withAnimation {
                             shouldShowDescription = true
                         }

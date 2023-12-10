@@ -23,12 +23,7 @@ extension CLLocation {
 }
 
 class Geocoder {
-    public static func fetchLocation(latitude: String, longitude: String, completed: @escaping (String, String) -> Void) {
-        guard let latitude = Double(latitude), let longitude = Double(longitude) else {
-            print("Failed to convert longitude and latitude.")
-            return
-        }
-        
+    public static func fetchLocation(latitude: Double, longitude: Double, completed: @escaping (String, String) -> Void) {
         let location = CLLocation(latitude: latitude, longitude: longitude)
         location.fetchCityAndCountry { city, country, error in
             guard let city = city, let country = country, error == nil else {
@@ -40,12 +35,7 @@ class Geocoder {
         }
     }
     
-    public static func fetchLocation(latitude: String, longitude: String, completed: @escaping (CLPlacemark) -> Void) {
-        guard let latitude = Double(latitude), let longitude = Double(longitude) else {
-            print("Failed to convert longitude and latitude.")
-            return
-        }
-        
+    public static func fetchLocation(latitude: Double, longitude: Double, completed: @escaping (CLPlacemark) -> Void) {
         let location = CLLocation(latitude: latitude, longitude: longitude)
         location.fetchLocation { location, error in
             guard let location = location, error == nil else {
@@ -64,23 +54,17 @@ class Geocoder {
         }
     }
     
-    public static func fetchCoordinates(address: String, handler: @escaping (String, String) -> Void) {
+    public static func fetchCoordinates(address: String, handler: @escaping (Double, Double) -> Void) {
         let _ = CLLocation().addressCompletion(addressString: address) { (placemark, error) in
             guard let placemark = placemark else { return }
             guard let first = placemark.first else { return }
             guard let location = first.location else { return }
             
-            handler(String(location.coordinate.latitude), String(location.coordinate.longitude))
+            handler(location.coordinate.latitude, location.coordinate.longitude)
         }
     }
     
-    public static func isValidLocation(latitude: String, longitude: String, completion: @escaping (Bool) -> Void) {
-        guard let latitude = Double(latitude), let longitude = Double(longitude) else {
-            print("Failed to convert longitude and latitude.")
-            completion(false)
-            return
-        }
-        
+    public static func isValidLocation(latitude: Double, longitude: Double, completion: @escaping (Bool) -> Void) {
         let location = CLLocation(latitude: latitude, longitude: longitude)
         location.fetchCityAndCountry { city, country, error in
             guard let _ = city, let _ = country, error == nil else {

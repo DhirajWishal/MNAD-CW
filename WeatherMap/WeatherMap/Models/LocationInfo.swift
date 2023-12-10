@@ -17,7 +17,7 @@ import Observation
     var latitude = WeatherPresets.getDefaultLatitude()
     var longitude = WeatherPresets.getDefaultLongitude()
     
-    init(city: String = "", country: String = "", latitude: String = WeatherPresets.getDefaultLatitude(), longitude: String = WeatherPresets.getDefaultLongitude()) {
+    init(city: String = "", country: String = "", latitude: Double = WeatherPresets.getDefaultLatitude(), longitude: Double = WeatherPresets.getDefaultLongitude()) {
         self.city = city
         self.country = country
         self.latitude = latitude

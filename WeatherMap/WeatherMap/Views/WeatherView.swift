@@ -68,7 +68,7 @@ struct WeatherView: View {
         }
     }
     
-    private func locationUpdated(latitude: String, longitude: String) {
+    private func locationUpdated(latitude: Double, longitude: Double) {
         if model.getLatitude() != latitude || model.getLongitude() != longitude {
             model.update(latitude: latitude, longitude: longitude)
         }

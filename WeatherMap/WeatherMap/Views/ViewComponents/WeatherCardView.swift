@@ -28,6 +28,7 @@ struct WeatherCardView: View {
                 WeatherInfoCard(systemName: "sun.min", title: "UVI", content: model.getUVI())
             }
         }
+        .background(RoundedRectangle(cornerRadius: 20.0).fill(.white.opacity(0.1)))
     }
 }
 

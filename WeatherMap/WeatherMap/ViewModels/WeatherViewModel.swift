@@ -27,15 +27,15 @@ import SwiftUI
         loadWeatherData(useDummy: true)
     }
     
-    public func getLatitude() -> String {
+    public func getLatitude() -> Double {
         return latitude
     }
     
-    public func getLongitude() -> String {
+    public func getLongitude() -> Double {
         return longitude
     }
     
-    public func update(latitude: String, longitude: String) {
+    public func update(latitude: Double, longitude: Double) {
         self.latitude = latitude
         self.longitude = longitude
         
@@ -43,11 +43,11 @@ import SwiftUI
     }
     
     public func refresh() {
-        provider.getWeatherData(latitude: latitude, longitude: longitude, completion: onWeatherDataLoaded)
+        provider.getWeatherData(latitude: String(latitude), longitude: String(longitude), completion: onWeatherDataLoaded)
     }
     
     public func refreshAsync() async {
-        await provider.getWeatherDataAsync(latitude: latitude, longitude: longitude, completion: onWeatherDataLoaded)
+        await provider.getWeatherDataAsync(latitude: String(latitude), longitude: String(longitude), completion: onWeatherDataLoaded)
     }
     
     public func isDataLoaded() -> Bool {
@@ -56,10 +56,10 @@ import SwiftUI
     
     public func loadWeatherData(useDummy: Bool = true) {
         if useDummy {
-            provider.getDummyData(latitude: latitude, longitude: longitude, completion: onWeatherDataLoaded)
+            provider.getDummyData(latitude: String(latitude), longitude: String(longitude), completion: onWeatherDataLoaded)
         }
         else {
-            provider.getWeatherData(latitude: latitude, longitude: longitude, completion: onWeatherDataLoaded)
+            provider.getWeatherData(latitude: String(latitude), longitude: String(longitude), completion: onWeatherDataLoaded)
         }
     }
     
@@ -167,8 +167,8 @@ import SwiftUI
     private func onWeatherDataLoaded(data: WeatherData) {
         weatherData = data
         
-        latitude = String(data.lat)
-        longitude = String(data.lon)
+        latitude = data.lat
+        longitude = data.lon
         
         saveData()
     }
@@ -196,8 +196,8 @@ import SwiftUI
         if let unwrappedData = data, let decodedData = try? JSONDecoder().decode(WeatherData.self, from: unwrappedData) {
             weatherData = decodedData
             
-            latitude = String(decodedData.lat)
-            longitude = String(decodedData.lon)
+            latitude = decodedData.lat
+            longitude = decodedData.lon
         }
     }
 }

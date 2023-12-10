@@ -11,7 +11,7 @@ import Observation
 @Observable class LocationViewModel {
     var locationInfo = LocationInfo()
     
-    public func update(latitude: String, longitude: String, completed: ((String, String) -> Void)? = nil) {
+    public func update(latitude: Double, longitude: Double, completed: ((String, String) -> Void)? = nil) {
         Geocoder.fetchLocation(latitude: latitude, longitude: longitude, completed: { placemark in
             guard let city = placemark.locality,
                   let country = placemark.country,
@@ -22,8 +22,8 @@ import Observation
             
             self.locationInfo.city = city
             self.locationInfo.country = country
-            self.locationInfo.latitude = String(format: "%.4f", coordinates.latitude)
-            self.locationInfo.longitude = String(format: "%.4f", coordinates.longitude)
+            self.locationInfo.latitude = coordinates.latitude
+            self.locationInfo.longitude = coordinates.longitude
             self.locationInfo.timeZone = timeZone
             self.locationInfo.areasOfInterest = areasOfInterest
             

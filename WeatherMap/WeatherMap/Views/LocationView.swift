@@ -13,7 +13,7 @@ struct LocationView: View {
     let locationManager = LocationManager()
     let model = LocationViewModel()
     
-    let updatedCallback: (String, String) -> Void
+    let updatedCallback: (Double, Double) -> Void
     
     @State var searchString = ""
     @State var searchPlaceholder = "City, Country"
@@ -27,8 +27,8 @@ struct LocationView: View {
 //    // To get the user location.
 //    @State var cameraPosition: MapCameraPosition = MapCameraPosition.userLocation(fallback: MapCameraPosition.automatic)
     
-    @State var latitude = ""
-    @State var longitude = ""
+    @State var latitude = 0.0
+    @State var longitude = 0.0
     
     @State var showMoreInfo = false
     @State var showPrediction = false
@@ -37,13 +37,13 @@ struct LocationView: View {
     
     @Environment(\.dismiss) var dismiss
     
-    init(latitude: String, longitude: String, callback: @escaping (String, String) -> Void) {
+    init(latitude: Double, longitude: Double, callback: @escaping (Double, Double) -> Void) {
         self.updatedCallback = callback
         self.latitude = latitude
         self.longitude = longitude
         
-        self.latitude = String(format: "%.4f", cameraPosition.camera?.centerCoordinate.latitude ?? 0)
-        self.longitude = String(format: "%.4f", cameraPosition.camera?.centerCoordinate.longitude ?? 0)
+        self.latitude = cameraPosition.camera?.centerCoordinate.latitude ?? 0
+        self.longitude = cameraPosition.camera?.centerCoordinate.longitude ?? 0
         
         updateLocation()
     }
@@ -184,8 +184,8 @@ struct LocationView: View {
     private func onLocationTapped(coordinates: CLLocationCoordinate2D?) {
         guard let coordinates = coordinates else { return }
         
-        latitude = String(coordinates.latitude)
-        longitude = String(coordinates.longitude)
+        latitude = coordinates.latitude
+        longitude = coordinates.longitude
         
         showLocationInfo()
     }
@@ -199,10 +199,6 @@ struct LocationView: View {
     }
     
     private func getCoordinates() -> CLLocationCoordinate2D {
-        guard let latitude = Double(latitude), let longitude = Double(longitude) else {
-            return CLLocationCoordinate2D(latitude: 0, longitude: 0)
-        }
-        
         return CLLocationCoordinate2D(
             latitude: latitude,
             longitude: longitude
@@ -254,13 +250,6 @@ struct LocationView: View {
     
     private func getCenterCoordinate(coordinates: CLLocationCoordinate2D?) -> CLLocationCoordinate2D {
         guard let coordinates = coordinates else {
-            guard let latitude = Double(latitude), let longitude = Double(longitude) else {
-                return CLLocationCoordinate2D(
-                    latitude: 0,
-                    longitude: 0
-                )
-            }
-            
             return CLLocationCoordinate2D(
                 latitude: latitude,
                 longitude: longitude

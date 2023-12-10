@@ -11,8 +11,8 @@ import SwiftUI
 struct WeatherMapApp: App {
     var body: some Scene {
         WindowGroup {
-            MapAnnotations()
-//            ContentView()
+//            MapAnnotations()
+            ContentView()
         }
     }
 }

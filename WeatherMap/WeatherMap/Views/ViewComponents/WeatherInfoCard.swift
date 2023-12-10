@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct WeatherInfoCard: View {
-    let systemName: String
-    let title: String
-    let content: String
+    public let systemName: String
+    public let title: String
+    public let content: String
     
     var body: some View {
         HStack {

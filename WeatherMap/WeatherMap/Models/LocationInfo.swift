@@ -7,12 +7,13 @@
 
 import Foundation
 import Observation
+import MapKit
 
 @Observable class LocationInfo {
     var city = ""
     var country = ""
     var timeZone = ""
-    var areasOfInterest: [String] = []
+    var touristAttractions: [MKMapItem] = []
     
     var latitude = WeatherPresets.getDefaultLatitude()
     var longitude = WeatherPresets.getDefaultLongitude()

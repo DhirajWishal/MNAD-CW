@@ -10,40 +10,37 @@ import MapKit
 
 
 struct LocationView: View {
-    let locationManager = LocationManager()
-    let model = LocationViewModel()
+    private let locationManager = LocationManager()
+    private let model = LocationViewModel()
     
-    let updatedCallback: (Double, Double) -> Void
+    private let updatedCallback: (Double, Double) -> Void
     
-    @State var searchString = ""
-    @State var searchPlaceholder = "City, Country"
-    @State var searchPredictions: [String] = []
-    @State var selectedSearchString = ""
+    @State private var searchString = ""
+    @State private var searchPlaceholder = "City, Country"
+    @State private var searchPredictions: [String] = []
+    @State private var selectedSearchString = ""
     
-    @State var regionSpan = 0.1
+    @State private var regionSpan = 0.1
     
-    @State var cameraPosition: MapCameraPosition = MapCameraPosition.automatic
+    @State private var cameraPosition: MapCameraPosition = MapCameraPosition.automatic
     
 //    // To get the user location.
 //    @State var cameraPosition: MapCameraPosition = MapCameraPosition.userLocation(fallback: MapCameraPosition.automatic)
     
-    @State var latitude = 0.0
-    @State var longitude = 0.0
+    @State private var latitude = 0.0
+    @State private var longitude = 0.0
     
-    @State var showMoreInfo = false
-    @State var showPrediction = false
+    @State private var showMoreInfo = false
+    @State private var showPrediction = false
     
-    @FocusState var isFocusedOnEditing: Bool
+    @FocusState private var isFocusedOnEditing: Bool
     
-    @Environment(\.dismiss) var dismiss
+    @Environment(\.dismiss) private var dismiss
     
     init(latitude: Double, longitude: Double, callback: @escaping (Double, Double) -> Void) {
         self.updatedCallback = callback
         self.latitude = latitude
         self.longitude = longitude
-        
-        self.latitude = cameraPosition.camera?.centerCoordinate.latitude ?? 0
-        self.longitude = cameraPosition.camera?.centerCoordinate.longitude ?? 0
         
         updateLocation()
     }
@@ -56,13 +53,23 @@ struct LocationView: View {
                         Annotation("", coordinate: getCenterCoordinate(coordinates: getCoordinates())) {
                             Image(systemName: "mappin").foregroundColor(.red)
                         }
+                        
+                        ForEach(model.locationInfo.touristAttractions, id: \.self) { item in
+                            if let name = item.name {
+                                if !item.isCurrentLocation {
+                                    Marker(name, coordinate: item.placemark.coordinate)
+                                } else {
+                                    Marker(name, coordinate: getCoordinates())
+                                }
+                            }
+                        }
                     }
                     .mapControls {
-                        // To reolocate back to user.
-                        MapUserLocationButton()
-                        
-                        // To switch from 2D to 3D
-                        MapPitchToggle()
+                            // To reolocate back to user.
+                            MapUserLocationButton()
+                            
+                            // To switch from 2D to 3D
+                            MapPitchToggle()
                     }
                     .onTapGesture { screenCoord in
                         onLocationTapped(coordinates: reader.convert(screenCoord, from: .local))
@@ -120,9 +127,9 @@ struct LocationView: View {
                             .opacity(0.75)
                         }
                         
-                        Spacer()
-                        
                         if !showMoreInfo {
+                            Spacer()
+                            
                             VStack {
                                 HStack {
                                     Spacer()
@@ -250,10 +257,7 @@ struct LocationView: View {
     
     private func getCenterCoordinate(coordinates: CLLocationCoordinate2D?) -> CLLocationCoordinate2D {
         guard let coordinates = coordinates else {
-            return CLLocationCoordinate2D(
-                latitude: latitude,
-                longitude: longitude
-            )
+            return getCoordinates()
         }
         
         return coordinates

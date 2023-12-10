@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct WeatherTemperatureView: View {
-    var model: WeatherViewModel
+    public let model: WeatherViewModel
     
     var body: some View {
         HStack (spacing: 20) {

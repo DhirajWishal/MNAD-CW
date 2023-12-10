@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreLocation
+import MapKit
 
 extension CLLocation {
     func fetchLocation(completion: @escaping (_ location: CLPlacemark?, _ error: Error?) -> ()) {
@@ -74,6 +75,23 @@ class Geocoder {
             }
             
             completion(true)
+        }
+    }
+    
+    public static func fetchMapItems(latitude: Double, longitude: Double, query: String, completion: @escaping ([MKMapItem]) -> Void) {
+        let request = MKLocalSearch.Request()
+        request.naturalLanguageQuery = query
+        request.resultTypes = .pointOfInterest
+        request.region = MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: latitude, longitude: longitude),
+            span: MKCoordinateSpan (latitudeDelta: 0.0125, longitudeDelta: 0.0125)
+        )
+        
+        Task {
+            let search = MKLocalSearch(request: request)
+            let response = try? await search.start()
+            guard let items = response?.mapItems else { return }
+            completion(items)
         }
     }
 }

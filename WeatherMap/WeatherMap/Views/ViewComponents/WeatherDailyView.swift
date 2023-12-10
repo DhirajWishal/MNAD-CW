@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct WeatherDailyView: View {
-    var model: WeatherViewModel
+    public let model: WeatherViewModel
     
     var body: some View {
         ScrollView (showsIndicators: false) {

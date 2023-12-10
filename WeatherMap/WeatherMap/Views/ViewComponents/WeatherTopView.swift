@@ -8,15 +8,15 @@
 import SwiftUI
 
 struct WeatherTopView: View {
-    var model: WeatherViewModel
+    public var model: WeatherViewModel
     
-    @Binding var shouldShowLocationSearch: Bool
+    @Binding public var shouldShowLocationSearch: Bool
     
-    @State var isLocationAvailable = false
-    @State var cityName = ""
-    @State var countryName = ""
+    @State private var isLocationAvailable = false
+    @State private var cityName = ""
+    @State private var countryName = ""
     
-    @State var showAreasOfInterest = false
+    @State private var showAreasOfInterest = false
     
     var body: some View {
         HStack {
@@ -26,18 +26,23 @@ struct WeatherTopView: View {
                         Button(action: {
                             showAreasOfInterest = true
                         }, label: {
-                            Text(cityName)
-                                .font(.largeTitle)
-                                .foregroundStyle(.white)
-                                .multilineTextAlignment(.leading)
-                                .bold()
-                            
-                            Text(countryName)
-                                .foregroundStyle(.white)
-                                .multilineTextAlignment(.leading)
-                                .bold()
-                            
-                            Image(systemName: "arrow.up.forward.app")
+                            VStack(alignment: .leading) {
+                                HStack {
+                                    Text(cityName)
+                                        .font(.largeTitle)
+                                        .foregroundStyle(.white)
+                                        .multilineTextAlignment(.leading)
+                                        .bold()
+                                    
+                                    Image(systemName: "arrow.up.forward.app")
+                                }
+                                
+                                Text(countryName)
+                                    .font(.title2)
+                                    .foregroundStyle(.white)
+                                    .multilineTextAlignment(.leading)
+                                    .bold()
+                            }
                         })
                         .tint(.white)
                     } else {
@@ -51,7 +56,6 @@ struct WeatherTopView: View {
                     Button(action: {
                         shouldShowLocationSearch = true
                     }, label: {
-//                        Image(systemName: "location.fill")
                         Image(systemName: "map.fill")
                             .resizable()
                             .scaledToFit()
@@ -61,38 +65,15 @@ struct WeatherTopView: View {
                 }
                 
                 Text(model.getDateTime())
-                    .bold()
                     .foregroundStyle(.white)
                     .multilineTextAlignment(.leading)
-                
-                Divider()
-                    .overlay(.white)
-                
-                HStack {
-                    Image(systemName: WeatherPresets.getWeatherSystemImage(type: model.getSummary()))
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 50)
-                        .foregroundStyle(.white.opacity(0.75))
-                    
-                    VStack(alignment: .leading) {
-                        Text(model.getSummary())
-                            .font(.custom("ExtraLarge", size: 30))
-                            .foregroundStyle(.white.opacity(0.75))
-                            .multilineTextAlignment(.leading)
-                        
-                        Text(model.getDescription())
-                            .foregroundStyle(.white.opacity(0.75))
-                            .multilineTextAlignment(.leading)
-                    }
-                }
             }
         }
         .onAppear() {
             Geocoder.fetchLocation(latitude: model.getLatitude(), longitude: model.getLongitude(), completed: onLocationNameFetched)
         }
         .navigationDestination(isPresented: $showAreasOfInterest) {
-            TouristAttractionsView()
+            TouristAttractionsView(latitude: model.getLatitude(), longitude: model.getLongitude())
         }
     }
     

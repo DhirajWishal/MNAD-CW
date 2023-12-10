@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct WeatherView: View {
-    var model: WeatherViewModel
+    public var model: WeatherViewModel
     
-    @State var shouldShowLocationSearch = false
+    @State private var shouldShowLocationSearch = false
     
     var body: some View {
         NavigationStack {
@@ -29,6 +29,12 @@ struct WeatherView: View {
                     VStack(alignment: .leading) {	
                         // Show the location information and time.
                         WeatherTopView(model: model, shouldShowLocationSearch: $shouldShowLocationSearch)
+                        
+                        Divider()
+                            .overlay(.white)
+                        
+                        // Show weather summary.
+                        WeatherSummaryView(model: model)
                         
                         // Show the temperature information
                         WeatherTemperatureView(model: model)

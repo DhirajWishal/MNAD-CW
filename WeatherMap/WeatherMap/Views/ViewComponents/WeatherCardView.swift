@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct WeatherCardView: View {
-    let weatherCardWidth: CGFloat = 110
-    var model: WeatherViewModel
+    private let weatherCardWidth: CGFloat = 110
+    
+    public let model: WeatherViewModel
     
     var body: some View {
         VStack {

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DayWeatherView: View {
-    let dayWeather: Day
+    public let dayWeather: Day
     
     var body: some View {
         NavigationStack {

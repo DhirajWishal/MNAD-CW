@@ -15,25 +15,18 @@ struct LocationView: View {
     
     private let updatedCallback: (Double, Double) -> Void
     
-    @State private var searchString = ""
-    @State private var searchPlaceholder = "City, Country"
-    @State private var searchPredictions: [String] = []
-    @State private var selectedSearchString = ""
-    
     @State private var regionSpan = 0.1
     
-    @State private var cameraPosition: MapCameraPosition = MapCameraPosition.automatic
+    //    @State private var cameraPosition: MapCameraPosition = MapCameraPosition.automatic
     
-//    // To get the user location.
-//    @State var cameraPosition: MapCameraPosition = MapCameraPosition.userLocation(fallback: MapCameraPosition.automatic)
+    //    // To get the user location.
+    @State var cameraPosition: MapCameraPosition = MapCameraPosition.userLocation(fallback: MapCameraPosition.automatic)
     
     @State private var latitude = 0.0
     @State private var longitude = 0.0
     
     @State private var showMoreInfo = false
-    @State private var showPrediction = false
-    
-    @FocusState private var isFocusedOnEditing: Bool
+    @State private var showSearch = false
     
     @Environment(\.dismiss) private var dismiss
     
@@ -65,11 +58,14 @@ struct LocationView: View {
                         }
                     }
                     .mapControls {
-                            // To reolocate back to user.
-                            MapUserLocationButton()
-                            
-                            // To switch from 2D to 3D
-                            MapPitchToggle()
+                        // To reolocate back to user.
+                        MapUserLocationButton()
+                        
+                        // To switch from 2D to 3D
+                        MapPitchToggle()
+                        
+                        // Show the compass.
+                        MapCompass()
                     }
                     .onTapGesture { screenCoord in
                         onLocationTapped(coordinates: reader.convert(screenCoord, from: .local))
@@ -81,50 +77,31 @@ struct LocationView: View {
                 
                 VStack {
                     VStack {
-                        HStack {
-                            TextField(searchPlaceholder, text: $searchString)
-                                .textFieldStyle(.roundedBorder)
-                                .onChange(of: searchString, {
-                                    Geocoder.addressCompletion(address: searchString, handler: onAddressCompletion)
-                                })
-                                .focused($isFocusedOnEditing)
-                                .onSubmit {
-                                    updateLocation()
-                                    onReverseLocationSearch()
-                                                                        
-                                    showPrediction = false
-                                }
-                                .opacity(0.75)
-                            
-                            Button(action: {
-                                onReverseLocationSearch()
-                                
-                                showPrediction = false
-                            }, label: {
-                                Image(systemName: "magnifyingglass")
-                                    .bold()
-                            })
-                            .tint(.black)
-                        }
-                        
-                        if isFocusedOnEditing && showPrediction {
-                            List {
-                                ForEach(searchPredictions, id: \.self) { prediction in
+                        if !showSearch {
+                            HStack {
+                                ZStack {
+                                    Color.white
+                                    
                                     Button(action: {
-                                        searchString = prediction
-                                        selectedSearchString = prediction
-                                        
-                                        updateLocation()
-                                        onReverseLocationSearch()
-                                        
-                                        isFocusedOnEditing = false
+                                        withAnimation {
+                                            showSearch = true
+                                        }
                                     }, label: {
-                                        Text(prediction)
+                                        Image(systemName: "magnifyingglass")
+                                            .bold()
                                     })
                                 }
+                                .clipShape(RoundedRectangle(cornerRadius: 25.0))
+                                .background(RoundedRectangle(cornerRadius: 25.0).shadow(radius: 10))
+                                .frame(width: 50, height: 50)
+                                
+                                Spacer()
                             }
-                            .listStyle(.plain)
-                            .opacity(0.75)
+                        }
+                        
+                        if showSearch {
+                            LocationSearchView(latitude: self.latitude, longitude: self.longitude, updateLocation: self.updateLocation,
+                                               onReverseLocationSearch: self.onReverseLocationSearch)
                         }
                         
                         if !showMoreInfo {
@@ -222,29 +199,10 @@ struct LocationView: View {
     }
     
     private func updateLocation() {
-        Geocoder.fetchLocation(latitude: latitude, longitude: longitude, completed: { city, country in
-            searchPlaceholder = "\(city), \(country)"
-            searchString = "\(city), \(country)"
-        })
-        
         showLocationInfo()
     }
     
-    private func onAddressCompletion(placemarks: [CLPlacemark]) {
-        self.searchPredictions = []
-        
-        placemarks.forEach({ placemark in
-            if let city = placemark.locality, let country = placemark.country {
-                let prediction = "\(city), \(country)"
-                
-                self.searchPredictions.append(prediction)
-            }
-        })
-        
-        showPrediction = !searchPredictions.isEmpty
-    }
-    
-    private func onReverseLocationSearch() {
+    private func onReverseLocationSearch(searchString: String) {
         Geocoder.fetchCoordinates(address: searchString, handler: { latitude, longitude in
             self.latitude = latitude
             self.longitude = longitude
@@ -253,6 +211,10 @@ struct LocationView: View {
             updateCamera()
             showLocationInfo()
         })
+        
+        withAnimation {
+            showSearch = false
+        }
     }
     
     private func getCenterCoordinate(coordinates: CLLocationCoordinate2D?) -> CLLocationCoordinate2D {

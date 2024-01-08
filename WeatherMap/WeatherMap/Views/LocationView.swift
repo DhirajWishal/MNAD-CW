@@ -8,10 +8,9 @@
 import SwiftUI
 import MapKit
 
-
 struct LocationView: View {
     private let locationManager = LocationManager()
-    private let model = LocationViewModel()
+    private let model: LocationViewModel
     
     private let updatedCallback: (Double, Double) -> Void
     
@@ -30,7 +29,8 @@ struct LocationView: View {
     
     @Environment(\.dismiss) private var dismiss
     
-    init(latitude: Double, longitude: Double, callback: @escaping (Double, Double) -> Void) {
+    init(model: LocationViewModel, latitude: Double, longitude: Double, callback: @escaping (Double, Double) -> Void) {
+        self.model = model
         self.updatedCallback = callback
         self.latitude = latitude
         self.longitude = longitude
@@ -55,6 +55,10 @@ struct LocationView: View {
                                     Marker(name, coordinate: getCoordinates())
                                 }
                             }
+                        }
+                        
+                        ForEach(model.getFilteredPredefinedLocations()) { location in
+                            Marker(location.name, coordinate: location.coordinate)
                         }
                     }
                     .mapControls {
@@ -143,7 +147,7 @@ struct LocationView: View {
                     .padding()
                     
                     if showMoreInfo {
-                        LocationInfoView(showMoreInfo: $showMoreInfo, locationInfo: model.locationInfo)
+                        LocationInfoView(showMoreInfo: $showMoreInfo, model: model)
                     }
                 }
             }
@@ -227,5 +231,10 @@ struct LocationView: View {
 }
 
 #Preview {
-    LocationView(latitude: WeatherPresets.getDefaultLatitude(), longitude: WeatherPresets.getDefaultLongitude(), callback: { (lat, lon) in })
+    LocationView(
+        model: LocationViewModel(),
+        latitude: WeatherPresets.getDefaultLatitude(),
+        longitude: WeatherPresets.getDefaultLongitude(),
+        callback: { (lat, lon) in }
+    )
 }

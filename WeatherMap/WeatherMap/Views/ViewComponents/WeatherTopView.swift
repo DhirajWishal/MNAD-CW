@@ -9,6 +9,7 @@ import SwiftUI
 
 struct WeatherTopView: View {
     public var model: WeatherViewModel
+    public var locationViewModel: LocationViewModel
     
     @Binding public var shouldShowLocationSearch: Bool
     
@@ -73,7 +74,7 @@ struct WeatherTopView: View {
             Geocoder.fetchLocation(latitude: model.getLatitude(), longitude: model.getLongitude(), completed: onLocationNameFetched)
         }
         .navigationDestination(isPresented: $showAreasOfInterest) {
-            TouristAttractionsView(latitude: model.getLatitude(), longitude: model.getLongitude())
+            TouristAttractionsView(model: locationViewModel)
         }
     }
     
@@ -85,5 +86,9 @@ struct WeatherTopView: View {
 }
 
 #Preview {
-    WeatherTopView(model: WeatherViewModel(), shouldShowLocationSearch: .constant(false))
+    WeatherTopView(
+        model: WeatherViewModel(),
+        locationViewModel: LocationViewModel(),
+        shouldShowLocationSearch: .constant(false)
+    )
 }

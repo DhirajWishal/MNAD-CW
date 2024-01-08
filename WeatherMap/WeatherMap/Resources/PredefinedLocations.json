@@ -1,5 +1,6 @@
 {
-    "locations": [
+    "locations":
+    [
         {
             "name": "Colosseum",
             "cityName": "Rome",
@@ -118,3 +119,4 @@
         }
     ]
 }
+

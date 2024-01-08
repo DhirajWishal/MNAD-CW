@@ -12,25 +12,25 @@ import MapKit
 struct LocationInfoView: View {
     @Binding public var showMoreInfo: Bool
     
-    public let locationInfo: LocationInfo
-        
+    public let model: LocationViewModel
+    
     var body: some View {
         ZStack {
             Color.white
             
             VStack {
                 VStack(alignment: .leading) {
-                    Text(locationInfo.city)
+                    Text(model.locationInfo.city)
                         .font(.title)
                         .bold()
                     
-                    Text("(\(locationInfo.latitude), \(locationInfo.longitude))")
+                    Text("(\(model.locationInfo.latitude), \(model.locationInfo.longitude))")
                         .foregroundStyle(.gray)
                     
-                    Text(locationInfo.country)
+                    Text(model.locationInfo.country)
                     
-                    if !locationInfo.touristAttractions.isEmpty {
-                        POIView(mapItems: locationInfo.touristAttractions)
+                    if !model.locationInfo.touristAttractions.isEmpty || !model.getFilteredPredefinedLocations().isEmpty {
+                        POIView(model: model)
                     } else {
                         Spacer()
                     }
@@ -58,5 +58,8 @@ struct LocationInfoView: View {
 }
 
 #Preview {
-    LocationInfoView(showMoreInfo: .constant(true), locationInfo: LocationInfo(city: "London", country: "United Kingdom"))
+    LocationInfoView(
+        showMoreInfo: .constant(true),
+        model: LocationViewModel()
+    )
 }

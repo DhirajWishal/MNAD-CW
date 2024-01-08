@@ -10,6 +10,11 @@ import Observation
 
 @Observable class LocationViewModel {
     public var locationInfo = LocationInfo()
+    private let predefinedLocationsParser = PredefinedLocationsParser()
+    
+    init() {
+        loadData()
+    }
     
     public func update(latitude: Double, longitude: Double, completed: ((String, String) -> Void)? = nil) {
         locationInfo = LocationInfo()
@@ -27,12 +32,45 @@ import Observation
             self.locationInfo.longitude = coordinates.longitude
             self.locationInfo.timeZone = timeZone
             
-            Geocoder.fetchMapItems(latitude: latitude, longitude: longitude, query: "tourist attractions", completion: { items in
-                self.locationInfo.touristAttractions = items
-                
-                guard let completed = completed else { return }
-                completed(city, country)
-            })
+            // TODO: Add this back after adding a proper method to get a location preview.
+//            Geocoder.fetchMapItems(latitude: latitude, longitude: longitude, query: "tourist attractions", completion: { items in
+//                self.locationInfo.touristAttractions = items
+//                
+//                guard let completed = completed else { return }
+//                completed(city, country)
+//            })
+            
+            // Save the data.
+            self.saveData()
+            
+            guard let completed = completed else { return }
+            completed(city, country)
         })
+    }
+    
+    public func getPredefinedLocations() -> [SubLocationDTO] {
+        return predefinedLocationsParser.getLocations()
+    }
+    
+    public func getFilteredPredefinedLocations() -> [SubLocationDTO] {
+        return predefinedLocationsParser.getFilteredLocations(cityName: locationInfo.city)
+    }
+    
+    // Save data to local storage.
+    public func saveData() {
+        if let encodedData = try? JSONEncoder().encode(locationInfo.getDTO()) {
+            UserDefaults.standard.set(encodedData, forKey: "WeatherMap_LocationData")
+        }
+    }
+    
+    // Load data from local storage.
+    public func loadData() {
+        let data = UserDefaults.standard.data(forKey: "WeatherMap_LocationData")
+        if let unwrappedData = data, let decodedData = try? JSONDecoder().decode(LocationInfoDTO.self, from: unwrappedData) {
+            locationInfo.fromDTO(dto: decodedData)
+            
+            // Update and get the tourist attractions.
+            update(latitude: locationInfo.latitude, longitude: locationInfo.longitude)
+        }
     }
 }

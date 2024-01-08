@@ -10,7 +10,7 @@ import CoreLocation
 import Observation
 
 @Observable class LocationManager: NSObject, CLLocationManagerDelegate {
-    var locationManager = CLLocationManager()
+    private var locationManager = CLLocationManager()
     
     override init() {
         super.init()

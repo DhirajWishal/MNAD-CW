@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var model = WeatherViewModel()
+    @State var weatherViewModel = WeatherViewModel()
+    @State var locationViewModel = LocationViewModel()
     
     @State var activeColorSet: [Color] = ContentView.getRandomGradient()
     @State var shouldRefresh = false
@@ -19,7 +20,7 @@ struct ContentView: View {
     var body: some View {
         VStack {
             if modelDataLoaded {
-                WeatherView(model: model)
+                WeatherView(model: weatherViewModel, locationViewModel: locationViewModel)
             } else {
                 // Inform the user that we're loading with a changing gradient.
                 ZStack {
@@ -31,8 +32,8 @@ struct ContentView: View {
                                 // color gradients to weather color gradient.
                                 if modelDataLoadedReady {
                                     modelDataLoaded = true
-                                } else if model.isDataLoaded() {
-                                    activeColorSet = WeatherPresets.getWeatherGradientColor(type: model.getSummary())
+                                } else if weatherViewModel.isDataLoaded() {
+                                    activeColorSet = WeatherPresets.getWeatherGradientColor(type: weatherViewModel.getSummary())
                                     
                                     modelDataLoadedReady = true
                                 } else {
@@ -58,9 +59,15 @@ struct ContentView: View {
         }
         .onAppear() {
             // Load data if we don't have any already.
-            if !model.isDataLoaded() {
+            if !weatherViewModel.isDataLoaded() {
                 // TODO: Access geolocation data and use that info.
-                model.loadWeatherData(useDummy: false)
+                weatherViewModel.loadWeatherData(useDummy: false)
+                
+                // Initialize the location information.
+                locationViewModel.update(
+                    latitude: weatherViewModel.getLatitude(),
+                    longitude: weatherViewModel.getLongitude()
+                )
             }
             else {
                 modelDataLoaded = true
@@ -69,7 +76,7 @@ struct ContentView: View {
         }
         .task {
             if shouldRefresh {
-//                await model.refreshAsync()
+                await weatherViewModel.refreshAsync()
                 shouldRefresh = false
             }
         }

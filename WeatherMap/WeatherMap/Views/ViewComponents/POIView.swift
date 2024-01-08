@@ -8,12 +8,12 @@
 import SwiftUI
 import MapKit
 
-struct POIView: View {
-    public let mapItems: [MKMapItem]
+struct POIView: View {    
+    public let model: LocationViewModel
     
     var body: some View {
         ScrollView(showsIndicators: false) {
-            ForEach(mapItems, id: \.self) { result in
+            ForEach(model.locationInfo.touristAttractions, id: \.self) { result in
                 if let name = result.name {
                     HStack {
                         VStack(alignment: .leading) {
@@ -38,9 +38,36 @@ struct POIView: View {
                         }
                         
                         Spacer()
+                        
+                        // Show the image here.
+                        LocationImageView(latitude: result.placemark.coordinate.latitude, longitude: result.placemark.coordinate.longitude)
                     }
                     
                     Spacer()
+                }
+            }
+            
+            ForEach(model.getFilteredPredefinedLocations()) { location in
+                HStack {
+                    VStack(alignment: .leading) {
+                        Button(action: {
+                            // Go-to link.
+                        }, label: {
+                            Text(location.name)
+                                .multilineTextAlignment(.leading)
+                                .font(.headline)
+                        })
+                        
+                        Text(location.description)
+                    }
+                    
+                    Spacer()
+                    
+                    // Show the image here.
+                    Image(location.imageNames[0])
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 100, height: 100)
                 }
             }
         }
@@ -48,5 +75,5 @@ struct POIView: View {
 }
 
 #Preview {
-    POIView(mapItems: [])
+    POIView(model: LocationViewModel())
 }

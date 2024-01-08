@@ -9,6 +9,7 @@ import SwiftUI
 
 struct WeatherView: View {
     public var model: WeatherViewModel
+    public var locationViewModel: LocationViewModel
     
     @State private var shouldShowLocationSearch = false
     
@@ -28,7 +29,11 @@ struct WeatherView: View {
                 ScrollView(showsIndicators: false) {
                     VStack(alignment: .leading) {	
                         // Show the location information and time.
-                        WeatherTopView(model: model, shouldShowLocationSearch: $shouldShowLocationSearch)
+                        WeatherTopView(
+                            model: model,
+                            locationViewModel: locationViewModel,
+                            shouldShowLocationSearch: $shouldShowLocationSearch
+                        )
                         
                         Divider()
                             .overlay(.white)
@@ -68,7 +73,7 @@ struct WeatherView: View {
                     await model.refreshAsync()
                 }
                 .navigationDestination(isPresented: $shouldShowLocationSearch) {
-                    LocationView(latitude: model.getLatitude(), longitude: model.getLongitude(), callback: locationUpdated)
+                    LocationView(model: locationViewModel, latitude: model.getLatitude(), longitude: model.getLongitude(), callback: locationUpdated)
                 }
             }
         }
@@ -82,5 +87,5 @@ struct WeatherView: View {
 }
 
 #Preview {
-    WeatherView(model: WeatherViewModel())
+    WeatherView(model: WeatherViewModel(), locationViewModel: LocationViewModel())
 }

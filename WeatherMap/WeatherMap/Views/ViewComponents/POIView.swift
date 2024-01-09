@@ -8,7 +8,7 @@
 import SwiftUI
 import MapKit
 
-struct POIView: View {    
+struct POIView: View {
     public let model: LocationViewModel
     
     var body: some View {
@@ -18,13 +18,12 @@ struct POIView: View {
                     HStack {
                         VStack(alignment: .leading) {
                             if let url = result.url {
-                                Button(action: {
-                                    // Go-to link.
-                                }, label: {
-                                    Text(name)
-                                        .multilineTextAlignment(.leading)
-                                        .font(.headline)
-                                })
+                                Link(
+                                    name,
+                                    destination: url
+                                )
+                                .multilineTextAlignment(.leading)
+                                .font(.headline)
                             }
                             else {
                                 Text(name)
@@ -50,13 +49,12 @@ struct POIView: View {
             ForEach(model.getFilteredPredefinedLocations()) { location in
                 HStack {
                     VStack(alignment: .leading) {
-                        Button(action: {
-                            // Go-to link.
-                        }, label: {
-                            Text(location.name)
-                                .multilineTextAlignment(.leading)
-                                .font(.headline)
-                        })
+                        Link(
+                            location.name,
+                            destination: URL(string: location.link)!
+                        )
+                        .multilineTextAlignment(.leading)
+                        .font(.headline)
                         
                         Text(location.description)
                     }

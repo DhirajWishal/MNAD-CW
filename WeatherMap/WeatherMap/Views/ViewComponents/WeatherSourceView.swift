@@ -17,19 +17,14 @@ struct WeatherSourceView: View {
                 
                 Spacer()
                 
-                Button("openweathermap.org", action: {
-                    onRedirectToSource()
-                })
+                Link(
+                    "openweathermap.org",
+                    destination: URL(string: "https://openweathermap.org")!
+                )
                 .font(.subheadline)
                 .buttonStyle(.bordered)
                 .tint(.white)
             }
-        }
-    }
-    
-    private func onRedirectToSource() {
-        if let url = URL(string: "openweathermap.org"), UIApplication.shared.canOpenURL(url) {
-            UIApplication.shared.open(url)
         }
     }
 }

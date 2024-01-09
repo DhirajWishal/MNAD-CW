@@ -16,24 +16,25 @@ struct LocationView: View {
     
     @State private var regionSpan = 0.1
     
-    //        @State private var cameraPosition: MapCameraPosition = MapCameraPosition.automatic
+    @State private var cameraPosition: MapCameraPosition = MapCameraPosition.automatic
     
     // To get the user location.
-    @State var cameraPosition: MapCameraPosition = MapCameraPosition.userLocation(fallback: MapCameraPosition.automatic)
+//    @State var cameraPosition: MapCameraPosition = MapCameraPosition.userLocation(fallback: MapCameraPosition.automatic)
     
     @State private var latitude = 0.0
     @State private var longitude = 0.0
     
     @State private var showMoreInfo = false
     @State private var showSearch = false
+    @State private var showTouristAttractions = false
     
     @Environment(\.dismiss) private var dismiss
     
-    init(model: LocationViewModel, latitude: Double, longitude: Double, callback: @escaping (Double, Double) -> Void) {
+    init(model: LocationViewModel, callback: @escaping (Double, Double) -> Void) {
         self.model = model
         self.updatedCallback = callback
-        self.latitude = latitude
-        self.longitude = longitude
+        self.latitude = model.locationInfo.latitude
+        self.longitude = model.locationInfo.longitude
     }
     
     var body: some View {
@@ -100,6 +101,22 @@ struct LocationView: View {
                                 
                                 Spacer()
                             }
+                            
+                            Spacer()
+                            
+                            VStack {
+                                Button(action: {
+                                    showTouristAttractions = true
+                                }, label: {
+                                    Text("Tourist attractions")
+                                    Image(systemName: "arrow.up.forward.app")
+                                })
+                                .buttonStyle(.bordered)
+                                .clipShape(RoundedRectangle(cornerRadius: 25.0))
+                                .background(RoundedRectangle(cornerRadius: 25.0).fill(.white))
+                            }
+//                            .clipShape(RoundedRectangle(cornerRadius: 25.0))
+//                            .background(RoundedRectangle(cornerRadius: 25.0).fill(.white).shadow(radius: 10))
                         }
                         
                         if showSearch {
@@ -129,8 +146,13 @@ struct LocationView: View {
             }
         }
         .onAppear {
-            updateLocation()
+            self.latitude = model.locationInfo.latitude
+            self.longitude = model.locationInfo.longitude
+            
             updateCamera()
+        }
+        .navigationDestination(isPresented: $showTouristAttractions) {
+            TouristAttractionsView(model: model)
         }
     }
     
@@ -198,8 +220,6 @@ struct LocationView: View {
 #Preview {
     LocationView(
         model: LocationViewModel(),
-        latitude: WeatherPresets.getDefaultLatitude(),
-        longitude: WeatherPresets.getDefaultLongitude(),
         callback: { (lat, lon) in }
     )
 }

@@ -73,7 +73,7 @@ struct WeatherView: View {
                     await model.refreshAsync()
                 }
                 .navigationDestination(isPresented: $shouldShowLocationSearch) {
-                    LocationView(model: locationViewModel, latitude: model.getLatitude(), longitude: model.getLongitude(), callback: locationUpdated)
+                    LocationView(model: locationViewModel, callback: locationUpdated)
                 }
             }
         }

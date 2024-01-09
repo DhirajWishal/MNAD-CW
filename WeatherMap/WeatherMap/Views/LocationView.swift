@@ -115,12 +115,10 @@ struct LocationView: View {
                                 .clipShape(RoundedRectangle(cornerRadius: 25.0))
                                 .background(RoundedRectangle(cornerRadius: 25.0).fill(.white))
                             }
-//                            .clipShape(RoundedRectangle(cornerRadius: 25.0))
-//                            .background(RoundedRectangle(cornerRadius: 25.0).fill(.white).shadow(radius: 10))
                         }
                         
                         if showSearch {
-                            LocationSearchView(latitude: self.latitude, longitude: self.longitude, updateLocation: self.updateLocation,
+                            LocationSearchView(latitude: self.latitude, longitude: self.longitude,
                                                onReverseLocationSearch: self.onReverseLocationSearch)
                         }
                     }
@@ -136,6 +134,7 @@ struct LocationView: View {
             .toolbar {
                 ToolbarItem {
                     Button(action: {
+                        updateLocation()
                         updatedCallback(latitude, longitude)
                         dismiss()
                     }, label: {
@@ -161,16 +160,6 @@ struct LocationView: View {
         
         latitude = coordinates.latitude
         longitude = coordinates.longitude
-        
-        showLocationInfo()
-    }
-    
-    private func showLocationInfo() {
-        model.update(latitude: latitude, longitude: longitude, completed: { _, _ in
-            withAnimation {
-                showMoreInfo = true
-            }
-        })
     }
     
     private func getCoordinates() -> CLLocationCoordinate2D {
@@ -190,7 +179,11 @@ struct LocationView: View {
     }
     
     private func updateLocation() {
-        showLocationInfo()
+        model.update(latitude: latitude, longitude: longitude, completed: { _, _ in
+            withAnimation {
+                showMoreInfo = true
+            }
+        })
     }
     
     private func onReverseLocationSearch(searchString: String) {
@@ -198,9 +191,7 @@ struct LocationView: View {
             self.latitude = latitude
             self.longitude = longitude
             
-            updateLocation()
             updateCamera()
-            showLocationInfo()
         })
         
         withAnimation {

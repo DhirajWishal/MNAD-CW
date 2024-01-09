@@ -18,11 +18,9 @@ struct LocationSearchView: View {
     
     @FocusState private var isFocusedOnEditing: Bool
     
-    @State private var updateLocation: () -> Void
     @State private var onReverseLocationSearch: (String) -> Void
     
-    init(latitude: Double, longitude: Double, updateLocation: @escaping () -> Void, onReverseLocationSearch: @escaping (String) -> Void) {
-        self.updateLocation = updateLocation
+    init(latitude: Double, longitude: Double, onReverseLocationSearch: @escaping (String) -> Void) {
         self.onReverseLocationSearch = onReverseLocationSearch
         
         self.initialize(latitude: latitude, longitude: longitude)
@@ -38,7 +36,6 @@ struct LocationSearchView: View {
                     })
                     .focused($isFocusedOnEditing)
                     .onSubmit {
-                        updateLocation()
                         onReverseLocationSearch(searchString)
                         
                         showPrediction = false
@@ -62,7 +59,6 @@ struct LocationSearchView: View {
                             searchString = prediction
                             selectedSearchString = prediction
                             
-                            updateLocation()
                             onReverseLocationSearch(searchString)
                             
                             isFocusedOnEditing = false
@@ -110,7 +106,6 @@ struct LocationSearchView: View {
     LocationSearchView(
         latitude: WeatherPresets.getDefaultLatitude(),
         longitude: WeatherPresets.getDefaultLongitude(),
-        updateLocation: {},
         onReverseLocationSearch: { searchString in }
     )
 }

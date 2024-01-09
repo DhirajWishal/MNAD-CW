@@ -44,6 +44,7 @@ struct DayWeatherView: View {
                         Text(dayWeather.summary)
                             .foregroundStyle(.white)
                             .font(.headline)
+                            .multilineTextAlignment(.center)
                         
                         HStack(spacing: 20) {
                             VStack {
@@ -111,36 +112,42 @@ struct DayWeatherView: View {
                             HStack {
                                 WeatherInfoCard(
                                     systemName: "sunrise",
-                                    title: "Sunrise", content: WeatherViewModel.GetTime(unix: dayWeather.sunRise)
+                                    title: "Sunrise", 
+                                    content: WeatherViewModel.GetTime(unix: dayWeather.sunRise)
                                 )
                                 
                                 WeatherInfoCard(
                                     systemName: "sunset",
-                                    title: "Sunset", content: WeatherViewModel.GetTime(unix: dayWeather.sunSet)
+                                    title: "Sunset", 
+                                    content: WeatherViewModel.GetTime(unix: dayWeather.sunSet)
                                 )
                             }
                             
                             HStack {
                                 WeatherInfoCard(
                                     systemName: "humidity",
-                                    title: "Humidity", content: "\(dayWeather.humidity)%"
+                                    title: "Humidity", 
+                                    content: "\(dayWeather.humidity)%"
                                 )
                                 
                                 WeatherInfoCard(
                                     systemName: "wind",
-                                    title: "Wind", content: "\(dayWeather.windGust!) Km/h"
+                                    title: "Wind", 
+                                    content: "\(String(format: "%.1f", dayWeather.windGust!)) Km/h"
                                 )
                             }
                             
                             HStack {
                                 WeatherInfoCard(
                                     systemName: "water.waves",
-                                    title: "Pressure", content: "\(dayWeather.pressure) hPa"
+                                    title: "Pressure", 
+                                    content: "\(dayWeather.pressure) hPa"
                                 )
                                 
                                 WeatherInfoCard(
                                     systemName: "sun.min",
-                                    title: "UVI", content: "\(dayWeather.uvi)"
+                                    title: "UVI", 
+                                    content: "\(dayWeather.uvi)"
                                 )
                             }
                         }

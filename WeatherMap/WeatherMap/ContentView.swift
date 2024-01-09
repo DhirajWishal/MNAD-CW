@@ -45,12 +45,14 @@ struct ContentView: View {
                     VStack {
                         Text("Weather Map")
                             .font(.largeTitle)
-                            .foregroundStyle(.black)
+                            .foregroundStyle(.white.opacity(0.75))
                             .bold()
                         
                         Spacer()
                         
                         ProgressView("Loading weather data...")
+                            .tint(.white)
+                            .foregroundStyle(.white)
                         
                         Spacer()
                     }
@@ -59,20 +61,16 @@ struct ContentView: View {
         }
         .onAppear() {
             // Load data if we don't have any already.
-            if !weatherViewModel.isDataLoaded() {
-                // TODO: Access geolocation data and use that info.
-                weatherViewModel.loadWeatherData(useDummy: false)
-                
-                // Initialize the location information.
-                locationViewModel.update(
-                    latitude: weatherViewModel.getLatitude(),
-                    longitude: weatherViewModel.getLongitude()
-                )
-            }
-            else {
+            if weatherViewModel.isDataLoaded() {
                 modelDataLoaded = true
                 shouldRefresh = true
             }
+            
+            // Initialize the location view model.
+            locationViewModel.update(
+                latitude: weatherViewModel.getLatitude(),
+                longitude: weatherViewModel.getLongitude()
+            )
         }
         .task {
             if shouldRefresh {

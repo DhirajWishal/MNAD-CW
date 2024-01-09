@@ -49,7 +49,7 @@ struct DayWeatherView: View {
                         HStack(spacing: 20) {
                             VStack {
                                 Text("Morning")
-                                    .font(.title2)
+                                    .font(.title3)
                                     .foregroundStyle(.white.opacity(0.75))
                                     .bold()
                                 
@@ -79,7 +79,7 @@ struct DayWeatherView: View {
                             
                             VStack {
                                 Text("Evening")
-                                    .font(.title2)
+                                    .font(.title3)
                                     .foregroundStyle(.white.opacity(0.75))
                                     .bold()
                                 
@@ -94,7 +94,7 @@ struct DayWeatherView: View {
                             
                             VStack {
                                 Text("Night")
-                                    .font(.title2)
+                                    .font(.title3)
                                     .foregroundStyle(.white.opacity(0.75))
                                     .bold()
                                 
@@ -158,6 +158,7 @@ struct DayWeatherView: View {
             }
             .navigationTitle(WeatherViewModel.GetDate(unix: dayWeather.dt))
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(.hidden)
         }
     }
 }

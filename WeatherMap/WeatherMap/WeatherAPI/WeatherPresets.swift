@@ -19,7 +19,7 @@ enum WeatherType:Int, CaseIterable {
 }
 
 struct WeatherPresets {
-    static let weatherTypeToString = [
+    public static let weatherTypeToString = [
         WeatherType.Thunderstorm:   "Thunderstorm",
         WeatherType.Drizzle:        "Drizzle",
         WeatherType.Rain:           "Rain",
@@ -29,7 +29,7 @@ struct WeatherPresets {
         WeatherType.Clouds:         "Clouds"
     ]
     
-    static let weatherStringToType = [
+    public static let weatherStringToType = [
         "Thunderstorm":             WeatherType.Thunderstorm,
         "Drizzle":                  WeatherType.Drizzle,
         "Rain":                     WeatherType.Rain,
@@ -39,17 +39,17 @@ struct WeatherPresets {
         "Clouds":                   WeatherType.Clouds
     ]
     
-    static let weatherColorCodes = [
-        WeatherType.Thunderstorm:   Color(red: 45 / 255, green: 54 / 255, blue: 86 / 255),
-        WeatherType.Drizzle:        Color(red: 140 / 255, green: 174 / 255, blue: 171 / 255),
+    public static let weatherColorCodes = [
+        WeatherType.Thunderstorm:   Color(red: 8 / 255, green: 54 / 255, blue: 86 / 255),
+        WeatherType.Drizzle:        Color(red: 124 / 255, green: 142 / 255, blue: 135 / 255),
         WeatherType.Rain:           Color(red: 144 / 255, green: 153 / 255, blue: 161 / 255),
         WeatherType.Snow:           Color(red: 99 / 255, green: 133 / 255, blue: 146 / 255),
         WeatherType.Atmosphere:     Color(red: 0 / 255, green: 153 / 255, blue: 221 / 255),
-        WeatherType.Clear:          Color(red: 135 / 255, green: 203 / 255, blue: 222 / 255),
+        WeatherType.Clear:          Color(red: 33 / 255, green: 124 / 255, blue: 163 / 255),
         WeatherType.Clouds:         Color(red: 114 / 255, green: 157 / 255, blue: 158 / 255)
     ]
     
-    static let weatherTypeToSystemImage = [
+    public static let weatherTypeToSystemImage = [
         WeatherType.Thunderstorm:   "cloud.bolt",
         WeatherType.Drizzle:        "cloud.drizzle",
         WeatherType.Rain:           "cloud.heavyrain",

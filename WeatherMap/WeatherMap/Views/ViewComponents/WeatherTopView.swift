@@ -74,7 +74,10 @@ struct WeatherTopView: View {
             Geocoder.fetchLocation(latitude: model.getLatitude(), longitude: model.getLongitude(), completed: onLocationNameFetched)
         }
         .navigationDestination(isPresented: $showAreasOfInterest) {
-            TouristAttractionsView(model: locationViewModel)
+            TouristAttractionsView(
+                touristAttractions: locationViewModel.locationInfo.touristAttractions,
+                predefinedLocations: locationViewModel.getFilteredPredefinedLocations()
+            )
         }
     }
     

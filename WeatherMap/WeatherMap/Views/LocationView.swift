@@ -21,6 +21,8 @@ struct LocationView: View {
     // To get the user location.
     //    @State var cameraPosition: MapCameraPosition = MapCameraPosition.userLocation(fallback: MapCameraPosition.automatic)
     
+    @State private var locationInfo = LocationInfo()
+    
     @State private var latitude = 0.0
     @State private var longitude = 0.0
     
@@ -142,7 +144,10 @@ struct LocationView: View {
                     .padding()
                     
                     if showMoreInfo {
-                        LocationInfoView(showMoreInfo: $showMoreInfo, model: model)
+                        LocationInfoView(
+                            showMoreInfo: $showMoreInfo,
+                            locationInfo: locationInfo
+                        )
                     }
                     
                     Spacer()
@@ -162,13 +167,17 @@ struct LocationView: View {
             }
         }
         .onAppear {
+            self.locationInfo = model.locationInfo
             self.latitude = model.locationInfo.latitude
             self.longitude = model.locationInfo.longitude
             
             updateCamera()
         }
         .navigationDestination(isPresented: $showTouristAttractions) {
-            TouristAttractionsView(model: model)
+            TouristAttractionsView(
+                touristAttractions: locationInfo.touristAttractions,
+                predefinedLocations: model.getFilteredPredefinedLocations()
+            )
         }
     }
     
@@ -209,6 +218,28 @@ struct LocationView: View {
             self.longitude = longitude
             
             updateCamera()
+            
+            Geocoder.fetchLocation(
+                latitude: latitude,
+                longitude: longitude,
+                completed: { placemark in
+                    guard let city = placemark.locality,
+                          let country = placemark.country,
+                          let coordinates = placemark.location?.coordinate,
+                          let timeZone = placemark.timeZone?.abbreviation()
+                    else { return }
+                    
+                    self.locationInfo.city = city
+                    self.locationInfo.country = country
+                    self.locationInfo.latitude = coordinates.latitude
+                    self.locationInfo.longitude = coordinates.longitude
+                    self.locationInfo.timeZone = timeZone
+                    
+                    withAnimation {
+                        showMoreInfo = true
+                    }
+                }
+            )
         })
         
         withAnimation {

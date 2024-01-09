@@ -9,14 +9,15 @@ import SwiftUI
 import MapKit
 
 struct POIView: View {
-    public let model: LocationViewModel
+    public let touristAttractions: [MKMapItem]
+    public let predefinedLocations: [SubLocationDTO]
     
     var body: some View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
-                ForEach(model.locationInfo.touristAttractions, id: \.self) { result in
+                ForEach(touristAttractions, id: \.self) { result in
                     NavigationLink(destination: {
-                        
+                        // TODO: Add a view to show this info.
                     }) {
                         if let name = result.name {
                             HStack {
@@ -52,7 +53,7 @@ struct POIView: View {
                     .buttonStyle(.plain)
                 }
                 
-                ForEach(model.getFilteredPredefinedLocations()) { location in
+                ForEach(predefinedLocations) { location in
                     NavigationLink(destination: {
                         TouristAttractionView(location: location)
                     }) {
@@ -86,5 +87,8 @@ struct POIView: View {
 }
 
 #Preview {
-    POIView(model: LocationViewModel())
+    POIView(
+        touristAttractions: [],
+        predefinedLocations: []
+    )
 }

@@ -9,9 +9,10 @@ import SwiftUI
 
 
 struct LocationInfoView: View {
-    @Binding public var showMoreInfo: Bool
+    private let predefinedLocations = PredefinedLocationsParser()
     
-    public let model: LocationViewModel
+    @Binding public var showMoreInfo: Bool
+    public let locationInfo: LocationInfo
     
     var body: some View {
         ZStack {
@@ -20,22 +21,25 @@ struct LocationInfoView: View {
             VStack {
                 HStack {
                     VStack(alignment: .leading) {
-                        Text(model.locationInfo.city)
+                        Text(locationInfo.city)
                             .font(.title)
                             .bold()
                         
-                        Text("(\(model.locationInfo.latitude), \(model.locationInfo.longitude))")
+                        Text("(\(locationInfo.latitude), \(locationInfo.longitude))")
                             .foregroundStyle(.gray)
                         
-                        Text(model.locationInfo.country)
+                        Text(locationInfo.country)
                             .bold()
                     }
                     
                     Spacer()
                 }
                 
-                if !model.locationInfo.touristAttractions.isEmpty || !model.getFilteredPredefinedLocations().isEmpty {
-                    POIView(model: model)
+                if !locationInfo.touristAttractions.isEmpty || !predefinedLocations.getFilteredLocations(cityName: locationInfo.city).isEmpty {
+                    POIView(
+                        touristAttractions: locationInfo.touristAttractions,
+                        predefinedLocations: predefinedLocations.getFilteredLocations(cityName: locationInfo.city)
+                    )
                 }
                 
                 Spacer()
@@ -62,6 +66,6 @@ struct LocationInfoView: View {
 #Preview {
     LocationInfoView(
         showMoreInfo: .constant(true),
-        model: LocationViewModel()
+        locationInfo: LocationInfo()
     )
 }

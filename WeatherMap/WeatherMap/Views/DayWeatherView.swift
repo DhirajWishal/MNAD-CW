@@ -22,57 +22,141 @@ struct DayWeatherView: View {
                 .ignoresSafeArea()
                 
                 // Display the information.
-                VStack {
-                    Text(dayWeather.summary)
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 20) {
+                        VStack {
+                            Image(systemName: WeatherPresets.getWeatherSystemImage(type: dayWeather.weather[0].main))
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 100)
+                                .foregroundStyle(.white.opacity(0.75))
+                            
+                            Text(dayWeather.weather[0].main)
+                                .font(.largeTitle)
+                                .foregroundStyle(.white.opacity(0.75))
+                                .multilineTextAlignment(.leading)
+                            
+                            Text(dayWeather.weather[0].description.capitalized)
+                                .foregroundStyle(.white.opacity(0.75))
+                                .multilineTextAlignment(.leading)
+                        }
+                        
+                        Text(dayWeather.summary)
+                            .foregroundStyle(.white)
+                            .font(.headline)
+                        
+                        HStack(spacing: 20) {
+                            VStack {
+                                Text("Morning")
+                                    .font(.title2)
+                                    .foregroundStyle(.white.opacity(0.75))
+                                    .bold()
+                                
+                                Text(WeatherViewModel.GetTemperature(temp: dayWeather.temp.morn))
+                                    .font(.title3)
+                                    .foregroundStyle(.white)
+                                    .bold()
+                                
+                                Text(WeatherViewModel.GetTemperature(temp: dayWeather.feelsLike.morn))
+                                    .foregroundStyle(.white)
+                            }
+                            
+                            VStack {
+                                Text("Day")
+                                    .font(.title2)
+                                    .foregroundStyle(.white.opacity(0.75))
+                                    .bold()
+                                
+                                Text(WeatherViewModel.GetTemperature(temp: dayWeather.temp.day))
+                                    .font(.title3)
+                                    .foregroundStyle(.white)
+                                    .bold()
+                                
+                                Text(WeatherViewModel.GetTemperature(temp: dayWeather.feelsLike.day))
+                                    .foregroundStyle(.white)
+                            }
+                            
+                            VStack {
+                                Text("Evening")
+                                    .font(.title2)
+                                    .foregroundStyle(.white.opacity(0.75))
+                                    .bold()
+                                
+                                Text(WeatherViewModel.GetTemperature(temp: dayWeather.temp.eve))
+                                    .font(.title3)
+                                    .foregroundStyle(.white)
+                                    .bold()
+                                
+                                Text(WeatherViewModel.GetTemperature(temp: dayWeather.feelsLike.eve))
+                                    .foregroundStyle(.white)
+                            }
+                            
+                            VStack {
+                                Text("Night")
+                                    .font(.title2)
+                                    .foregroundStyle(.white.opacity(0.75))
+                                    .bold()
+                                
+                                Text(WeatherViewModel.GetTemperature(temp: dayWeather.temp.night))
+                                    .font(.title3)
+                                    .foregroundStyle(.white)
+                                    .bold()
+                                
+                                Text(WeatherViewModel.GetTemperature(temp: dayWeather.feelsLike.night))
+                                    .foregroundStyle(.white)
+                            }
+                        }
+                        
+                        VStack {
+                            HStack {
+                                WeatherInfoCard(
+                                    systemName: "sunrise",
+                                    title: "Sunrise", content: WeatherViewModel.GetTime(unix: dayWeather.sunRise)
+                                )
+                                
+                                WeatherInfoCard(
+                                    systemName: "sunset",
+                                    title: "Sunset", content: WeatherViewModel.GetTime(unix: dayWeather.sunSet)
+                                )
+                            }
+                            
+                            HStack {
+                                WeatherInfoCard(
+                                    systemName: "humidity",
+                                    title: "Humidity", content: "\(dayWeather.humidity)%"
+                                )
+                                
+                                WeatherInfoCard(
+                                    systemName: "wind",
+                                    title: "Wind", content: "\(dayWeather.windGust!) Km/h"
+                                )
+                            }
+                            
+                            HStack {
+                                WeatherInfoCard(
+                                    systemName: "water.waves",
+                                    title: "Pressure", content: "\(dayWeather.pressure) hPa"
+                                )
+                                
+                                WeatherInfoCard(
+                                    systemName: "sun.min",
+                                    title: "UVI", content: "\(dayWeather.uvi)"
+                                )
+                            }
+                        }
+                        .background(RoundedRectangle(cornerRadius: 20.0).fill(.white.opacity(0.1)))
+                    }
                 }
+                .padding()
             }
+            .navigationTitle(WeatherViewModel.GetDate(unix: dayWeather.dt))
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }
 
 #Preview {
     DayWeatherView(
-        dayWeather:
-            Day(
-                dt: 0,
-                sunRise: 0,
-                sunSet: 0,
-                moonRise: 0,
-                moonSet: 0,
-                moonPhase: 0,
-                summary: "Expect a day of partly cloudy with rain",
-                temp: Temperature(
-                    day: 0,
-                    min: 0,
-                    max: 0,
-                    night: 0,
-                    eve: 0,
-                    morn: 0
-                ),
-                feelsLike: FeelsLike(
-                    day: 0,
-                    night: 0,
-                    eve: 0,
-                    morn: 0
-                ),
-                pressure: 0,
-                humidity: 0,
-                dewPoint: 0,
-                windSpeed: 0,
-                windDeg: 0,
-                windGust: 0,
-                weather: [
-                    Weather(
-                        id: 0,
-                        main: "Clouds",
-                        description: "overcast clouds",
-                        icon: "04n")
-                ],
-                clouds: 0,
-                pop: 0,
-                rain: 0,
-                snow: 0,
-                uvi: 0
-            )
+        dayWeather: WeatherViewModel().getDailyForecast()[0]
     )
 }

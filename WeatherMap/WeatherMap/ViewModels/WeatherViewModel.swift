@@ -82,6 +82,15 @@ import SwiftUI
         return data.current.weather[0].description.capitalized
     }
     
+    public static func GetTime(unix: Int) -> String {
+        let date = Date(timeIntervalSince1970: TimeInterval(unix))
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "h:mm a"
+        
+        return formatter.string(from: date)
+    }
+    
     public static func GetHour(unix: Int) -> String {
         let date = Date(timeIntervalSince1970: TimeInterval(unix))
         
@@ -100,9 +109,17 @@ import SwiftUI
         return formatter.string(from: date)
     }
     
-    public func getDateTime() -> String {
-        guard let data = weatherData else { return "Jan 1, 1970 at 0 AM" }
-        let date = Date(timeIntervalSince1970: TimeInterval(data.current.dt))
+    public static func GetDate(unix: Int) -> String {
+        let date = Date(timeIntervalSince1970: TimeInterval(unix))
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMM dd, yyyy"
+        
+        return formatter.string(from: date)
+    }
+    
+    public static func GetDateTime(unix: Int) -> String {
+        let date = Date(timeIntervalSince1970: TimeInterval(unix))
         
         let formatter = DateFormatter()
         formatter.dateFormat = "MMM dd, yyyy 'at' h a"
@@ -110,14 +127,19 @@ import SwiftUI
         return formatter.string(from: date)
     }
     
+    public func getDateTime() -> String {
+        guard let data = weatherData else { return "Jan 1, 1970 at 0 AM" }
+        return WeatherViewModel.GetDateTime(unix: data.current.dt)
+    }
+    
     public func getSunRise() -> String {
         guard let data = weatherData else { return "0:00 AM" }
-        return decodeTimeFromUnix(value: data.current.sunRise)
+        return WeatherViewModel.GetTime(unix: data.current.sunRise)
     }
     
     public func getSunSet() -> String {
         guard let data = weatherData else { return "0:00 AM" }
-        return decodeTimeFromUnix(value: data.current.sunSet)
+        return WeatherViewModel.GetTime(unix: data.current.sunSet)
     }
     
     public static func GetTemperature(temp: Double) -> String {
@@ -171,15 +193,6 @@ import SwiftUI
         longitude = data.lon
         
         saveData()
-    }
-    
-    private func decodeTimeFromUnix(value: Int, format: String = "h:mm a") -> String {
-        let date = Date(timeIntervalSince1970: TimeInterval(value))
-        
-        let formatter = DateFormatter()
-        formatter.dateFormat = format
-        
-        return formatter.string(from: date)
     }
     
     // Save data to local storage.

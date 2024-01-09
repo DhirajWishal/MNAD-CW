@@ -6,13 +6,13 @@
 //
 
 import SwiftUI
+import Charts
 
 struct WeatherHourlyView: View {
     public let model: WeatherViewModel
     
     var body: some View {
         VStack {
-            // TODO: See hy the time is sus.
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack (spacing: 20) {
                     ForEach(model.getHourlyForecast()) { forecast in

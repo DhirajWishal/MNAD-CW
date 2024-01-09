@@ -16,10 +16,10 @@ struct LocationView: View {
     
     @State private var regionSpan = 0.1
     
-        @State private var cameraPosition: MapCameraPosition = MapCameraPosition.automatic
+    //        @State private var cameraPosition: MapCameraPosition = MapCameraPosition.automatic
     
-    //    // To get the user location.
-//    @State var cameraPosition: MapCameraPosition = MapCameraPosition.userLocation(fallback: MapCameraPosition.automatic)
+    // To get the user location.
+    @State var cameraPosition: MapCameraPosition = MapCameraPosition.userLocation(fallback: MapCameraPosition.automatic)
     
     @State private var latitude = 0.0
     @State private var longitude = 0.0
@@ -69,9 +69,10 @@ struct LocationView: View {
                         // Show the compass.
                         MapCompass()
                     }
-                    .onTapGesture { screenCoord in
-                        onLocationTapped(coordinates: reader.convert(screenCoord, from: .local))
-                    }
+                    // TODO: Add this back with a proper input system.
+                    //                    .onTapGesture { screenCoord in
+                    //                        onLocationTapped(coordinates: reader.convert(screenCoord, from: .local))
+                    //                    }
                     .onMapCameraChange { context in
                         print(context.camera.centerCoordinate)
                     }
@@ -79,7 +80,7 @@ struct LocationView: View {
                 
                 VStack {
                     VStack {
-                        if !showSearch {
+                        if !showSearch && !showMoreInfo {
                             HStack {
                                 ZStack {
                                     Color.white
@@ -105,48 +106,14 @@ struct LocationView: View {
                             LocationSearchView(latitude: self.latitude, longitude: self.longitude, updateLocation: self.updateLocation,
                                                onReverseLocationSearch: self.onReverseLocationSearch)
                         }
-                        
-                        if !showMoreInfo {
-                            Spacer()
-                            
-                            VStack {
-                                HStack {
-                                    Spacer()
-                                    
-                                    Button (action: {
-                                        regionSpan -= regionSpan / 2
-                                        updateCamera()
-                                    }, label: {
-                                        Image(systemName: "plus.magnifyingglass")
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 25, height: 25)
-                                    })
-                                    .foregroundStyle(.black)
-                                }
-                                
-                                HStack {
-                                    Spacer()
-                                    
-                                    Button (action: {
-                                        regionSpan += regionSpan / 2
-                                        updateCamera()
-                                    }, label: {
-                                        Image(systemName: "minus.magnifyingglass")
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 25, height: 25)
-                                    })
-                                    .foregroundStyle(.black)
-                                }
-                            }
-                        }
                     }
                     .padding()
                     
                     if showMoreInfo {
                         LocationInfoView(showMoreInfo: $showMoreInfo, model: model)
                     }
+                    
+                    Spacer()
                 }
             }
             .toolbar {

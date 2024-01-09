@@ -11,6 +11,8 @@ import Charts
 struct WeatherHourlyView: View {
     public let model: WeatherViewModel
     
+    @Environment(\.colorScheme) private var colorScheme
+    
     var body: some View {
         VStack {
             ScrollView(.horizontal, showsIndicators: false) {
@@ -28,7 +30,7 @@ struct WeatherHourlyView: View {
                             
                             Text(WeatherViewModel.GetHour(unix: forecast.dt))
                                 .font(.headline)
-                                .foregroundStyle(.black.opacity(0.75))
+                                .foregroundStyle(colorScheme == .dark ? .white.opacity(0.75) : .black.opacity(0.75))
                         }
                     }
                 }

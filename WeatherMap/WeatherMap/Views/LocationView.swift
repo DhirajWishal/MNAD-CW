@@ -19,7 +19,7 @@ struct LocationView: View {
     @State private var cameraPosition: MapCameraPosition = MapCameraPosition.automatic
     
     // To get the user location.
-//    @State var cameraPosition: MapCameraPosition = MapCameraPosition.userLocation(fallback: MapCameraPosition.automatic)
+    //    @State var cameraPosition: MapCameraPosition = MapCameraPosition.userLocation(fallback: MapCameraPosition.automatic)
     
     @State private var latitude = 0.0
     @State private var longitude = 0.0
@@ -29,6 +29,7 @@ struct LocationView: View {
     @State private var showTouristAttractions = false
     
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.colorScheme) private var colorScheme
     
     init(model: LocationViewModel, callback: @escaping (Double, Double) -> Void) {
         self.model = model
@@ -83,21 +84,27 @@ struct LocationView: View {
                     VStack {
                         if !showSearch && !showMoreInfo {
                             HStack {
-                                ZStack {
-                                    Color.white
-                                    
-                                    Button(action: {
-                                        withAnimation {
-                                            showSearch = true
-                                        }
-                                    }, label: {
-                                        Image(systemName: "magnifyingglass")
-                                            .bold()
-                                    })
-                                }
+                                Button(action: {
+                                    withAnimation {
+                                        showSearch = true
+                                    }
+                                }, label: {
+                                    Image(systemName: "magnifyingglass")
+                                        .bold()
+                                })
+                                .buttonStyle(.bordered)
                                 .clipShape(RoundedRectangle(cornerRadius: 25.0))
-                                .background(RoundedRectangle(cornerRadius: 25.0).shadow(radius: 10))
-                                .frame(width: 50, height: 50)
+                                .background(content: {
+                                    if colorScheme == .dark {
+                                        RoundedRectangle(cornerRadius: 25.0)
+                                            .fill(.black)
+                                            .shadow(radius: 10)
+                                    } else {
+                                        RoundedRectangle(cornerRadius: 25.0)
+                                            .fill(.white)
+                                            .shadow(radius: 10)
+                                    }
+                                })
                                 
                                 Spacer()
                             }
@@ -113,7 +120,17 @@ struct LocationView: View {
                                 })
                                 .buttonStyle(.bordered)
                                 .clipShape(RoundedRectangle(cornerRadius: 25.0))
-                                .background(RoundedRectangle(cornerRadius: 25.0).fill(.white))
+                                .background(content: {
+                                    if colorScheme == .dark {
+                                        RoundedRectangle(cornerRadius: 25.0)
+                                            .fill(.black)
+                                            .shadow(radius: 10)
+                                    } else {
+                                        RoundedRectangle(cornerRadius: 25.0)
+                                            .fill(.white)
+                                            .shadow(radius: 10)
+                                    }
+                                })
                             }
                         }
                         

@@ -12,6 +12,8 @@ struct WeatherInfoCard: View {
     public let title: String
     public let content: String
     
+    @Environment(\.colorScheme) private var colorScheme
+    
     var body: some View {
         HStack {
             Image(systemName: systemName)
@@ -28,7 +30,7 @@ struct WeatherInfoCard: View {
                 
                 Text(content)
                     .font(.headline)
-                    .foregroundStyle(.black.opacity(0.75))
+                    .foregroundStyle(colorScheme == .dark ? .white.opacity(0.75) : .black.opacity(0.75))
             }
             
             Spacer()

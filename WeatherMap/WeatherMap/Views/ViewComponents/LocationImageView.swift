@@ -7,12 +7,12 @@
 
 import SwiftUI
 
+// TODO: Change this with a proper places API.
 struct LocationImageView: View {
     let latitude: Double
     let longitude: Double
     
-    // Set the image size (width x height)
-    private let imageSize = "400x400"
+    private let imageSize = "400"
     
     @State private var streetViewImage: UIImage?
     

@@ -6,8 +6,7 @@
 //
 
 import SwiftUI
-import CoreLocation
-import MapKit
+
 
 struct LocationInfoView: View {
     @Binding public var showMoreInfo: Bool
@@ -19,21 +18,24 @@ struct LocationInfoView: View {
             Color.white
             
             VStack {
-                VStack(alignment: .leading) {
-                    Text(model.locationInfo.city)
-                        .font(.title)
-                        .bold()
-                    
-                    Text("(\(model.locationInfo.latitude), \(model.locationInfo.longitude))")
-                        .foregroundStyle(.gray)
-                    
-                    Text(model.locationInfo.country)
-                    
-                    if !model.locationInfo.touristAttractions.isEmpty || !model.getFilteredPredefinedLocations().isEmpty {
-                        POIView(model: model)
-                    } else {
-                        Spacer()
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text(model.locationInfo.city)
+                            .font(.title)
+                            .bold()
+                        
+                        Text("(\(model.locationInfo.latitude), \(model.locationInfo.longitude))")
+                            .foregroundStyle(.gray)
+                        
+                        Text(model.locationInfo.country)
+                            .bold()
                     }
+                    
+                    Spacer()
+                }
+                
+                if !model.locationInfo.touristAttractions.isEmpty || !model.getFilteredPredefinedLocations().isEmpty {
+                    POIView(model: model)
                 }
                 
                 Spacer()

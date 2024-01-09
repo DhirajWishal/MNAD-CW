@@ -16,10 +16,10 @@ struct LocationView: View {
     
     @State private var regionSpan = 0.1
     
-    //    @State private var cameraPosition: MapCameraPosition = MapCameraPosition.automatic
+        @State private var cameraPosition: MapCameraPosition = MapCameraPosition.automatic
     
     //    // To get the user location.
-    @State var cameraPosition: MapCameraPosition = MapCameraPosition.userLocation(fallback: MapCameraPosition.automatic)
+//    @State var cameraPosition: MapCameraPosition = MapCameraPosition.userLocation(fallback: MapCameraPosition.automatic)
     
     @State private var latitude = 0.0
     @State private var longitude = 0.0
@@ -34,8 +34,6 @@ struct LocationView: View {
         self.updatedCallback = callback
         self.latitude = latitude
         self.longitude = longitude
-        
-        updateLocation()
     }
     
     var body: some View {

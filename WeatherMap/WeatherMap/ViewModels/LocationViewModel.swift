@@ -32,19 +32,16 @@ import Observation
             self.locationInfo.longitude = coordinates.longitude
             self.locationInfo.timeZone = timeZone
             
-            // TODO: Add this back after adding a proper method to get a location preview.
-//            Geocoder.fetchMapItems(latitude: latitude, longitude: longitude, query: "tourist attractions", completion: { items in
-//                self.locationInfo.touristAttractions = items
-//                
-//                guard let completed = completed else { return }
-//                completed(city, country)
-//            })
-            
-            // Save the data.
-            self.saveData()
-            
-            guard let completed = completed else { return }
-            completed(city, country)
+            Geocoder.fetchMapItems(latitude: latitude, longitude: longitude, query: "tourist attractions", completion: { items in
+                // TODO: Add this back after adding a proper method to get a location preview.
+                // self.locationInfo.touristAttractions = items
+                
+                // Save the data.
+                self.saveData()
+                
+                guard let completed = completed else { return }
+                completed(city, country)
+            })
         })
     }
     

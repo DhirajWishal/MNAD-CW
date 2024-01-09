@@ -14,7 +14,11 @@ struct TouristAttractionsView: View {
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading) {
-                POIView(model: model)
+                if model.getFilteredPredefinedLocations().isEmpty {
+                    Text("Nothing to show here :(")
+                } else {
+                    POIView(model: model)
+                }
             }
             .navigationTitle("Tourist Attractions")
         }

@@ -17,7 +17,6 @@ struct WeatherView: View {
         NavigationStack {
             ZStack(alignment: .leading) {
                 // Set the background color.
-                // TODO: Switch themes depending on the time.
                 LinearGradient(
                     colors: model.getGradientColors(),
                     startPoint: .top,

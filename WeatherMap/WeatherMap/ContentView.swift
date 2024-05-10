@@ -64,6 +64,9 @@ struct ContentView: View {
             if weatherViewModel.isDataLoaded() {
                 modelDataLoaded = true
                 shouldRefresh = true
+            } else {
+                weatherViewModel.refresh()
+                modelDataLoaded = true
             }
             
             // Initialize the location view model.
@@ -75,6 +78,7 @@ struct ContentView: View {
         .task {
             if shouldRefresh {
                 await weatherViewModel.refreshAsync()
+                modelDataLoaded = true
                 shouldRefresh = false
             }
         }
